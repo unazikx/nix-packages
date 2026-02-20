@@ -9,6 +9,7 @@
     meta = with lib; {
       homepage = "https://github.com/Noperkot/TorrServerAdder";
       description = "Allows you to add torrents to TorrServer and play them using the system media player";
+      license = licenses.unfree;
       mozPermissions = [
         "http://*/*"
         "https://*/*"
@@ -31,6 +32,7 @@
     meta = with lib; {
       homepage = "https://libredirect.github.io";
       description = "Redirects YouTube, Twitter, TikTok... requests to alternative privacy friendly frontends.";
+      license = licenses.unfree;
       mozPermissions = [
         "webRequest"
         "webRequestBlocking"
@@ -51,6 +53,7 @@
     meta = with lib; {
       homepage = "https://github.com/code4charity/YouTube-Extension/";
       description = "Youtube Extension. Powerful but lightweight. Enrich your Youtube and content selection. Make YouTube tidy and smart! (Layout, Filters, Shortcuts, Playlist)";
+      license = licenses.unfree;
       mozPermissions = [
         "contextMenus"
         "storage"
@@ -69,6 +72,7 @@
     meta = with lib; {
       homepage = "https://gitlab.com/utzuro/browser-plugins/-/tree/main/redirectNixWiki";
       description = "Redirects old \"nixos.wiki\" to the official \"wiki.nixos.org\".";
+      license = licenses.mit;
       mozPermissions = [
         "webRequest"
         "webRequestBlocking"
@@ -85,6 +89,7 @@
     sha256 = "dc94a7efac63468f7d34a74bedf5c8b360a67c99d213bb5b1a1d55d911797782";
     meta = with lib; {
       description = "Translate your page in real time using Google, Bing or Yandex. It is not necessary to open new tabs.";
+      license = licenses.unfree;
       mozPermissions = [
         "<all_urls>"
         "storage"
@@ -105,6 +110,7 @@
     meta = with lib; {
       homepage = "https://keepassxc.org/";
       description = "Official browser plugin for the KeePassXC password manager (https://keepassxc.org).";
+      license = licenses.unfree;
       mozPermissions = [
         "activeTab"
         "clipboardWrite"
@@ -134,6 +140,7 @@
     meta = with lib; {
       homepage = "https://bitwarden.com";
       description = "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.";
+      license = licenses.unfree;
       mozPermissions = [
         "<all_urls>"
         "*://*/*"
@@ -163,6 +170,7 @@
     meta = with lib; {
       homepage = "https://github.com/gorhill/uBlock#ublock-origin";
       description = "Finally, an efficient wide-spectrum content blocker. Easy on CPU and memory.";
+      license = licenses.unfree;
       mozPermissions = [
         "alarms"
         "dns"
@@ -200,6 +208,7 @@
     meta = with lib; {
       homepage = "https://steamdb.info/";
       description = "Adds SteamDB links and new features on the Steam store and community. View lowest game prices and stats.";
+      license = licenses.bsd3;
       mozPermissions = [
         "storage"
         "https://steamdb.info/*"
@@ -256,6 +265,7 @@
     meta = with lib; {
       homepage = "https://add0n.com/stylus.html";
       description = "Redesign your favorite websites with Stylus, an actively developed and community driven userstyles manager. Easily install custom themes from popular online repositories, or create, edit, and manage your own personalized CSS stylesheets.";
+      license = licenses.unfree;
       mozPermissions = [
         "alarms"
         "contextMenus"
@@ -280,6 +290,7 @@
     meta = with lib; {
       homepage = "https://github.com/tryton-vanmeer/ProtonDB-for-Steam#protondb-for-steam";
       description = "Shows ratings from protondb.com on Steam";
+      license = licenses.unfree;
       mozPermissions = [
         "https://www.protondb.com/*"
         "https://store.steampowered.com/app/*"
@@ -299,6 +310,7 @@
     meta = with lib; {
       homepage = "https://darkreader.org/";
       description = "Dark mode for every website. Take care of your eyes, use dark theme for night and daily browsing.";
+      license = licenses.mit;
       mozPermissions = [
         "alarms"
         "contextMenus"
@@ -319,6 +331,7 @@
     meta = with lib; {
       homepage = "https://sponsor.ajay.app";
       description = "Easily skip YouTube video sponsors. When you visit a YouTube video, the extension will check the database for reported sponsors and automatically skip known sponsors. You can also report sponsors in videos. Other browsers: https://sponsor.ajay.app";
+      license = licenses.unfree;
       mozPermissions = [
         "storage"
         "scripting"
@@ -339,6 +352,7 @@
     meta = with lib; {
       homepage = "https://github.com/lolamtisch/MALSync";
       description = "MAL-Sync enables automatic episode tracking between MyAnimeList/Anilist/Kitsu/Simkl and multiple anime streaming websites.";
+      license = licenses.unfree;
       mozPermissions = [
         "storage"
         "alarms"
