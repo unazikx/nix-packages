@@ -9,15 +9,15 @@ yaziPlugins.mkYaziPlugin {
   version = "git";
 
   src = fetchFromGitHub {
-    owner = "unazikx";
+    owner = "alterkeyy";
     repo = "wl-clipboard.yazi";
-    rev = "e3eb54b8d7d2e79d53db90bdb509211d7bceae2f";
-    hash = "sha256-7eJjNJyC6q+foCF48lwtjCt8fKqHfRWebbp7ymEb5NE=";
+    rev = "a22bb04181c4e391a9f474dbba4a866888c73974";
+    hash = "sha256-v7SDA85NAQ6jhB6CELrlXyzi4X+zMgBSdu+Zb7s4DCI=";
   };
 
   meta = {
     description = "Simple system clipboard for yazi";
-    homepage = "https://github.com/unazikx/wl-clipboard.yazi";
+    homepage = "https://github.com/alterkeyy/wl-clipboard.yazi";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ unazikx ];
   };
