@@ -36,6 +36,29 @@
         "type": "github"
       }
     },
+    "nur": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771671141,
+        "narHash": "sha256-MmiMZOWvRO2OeCQUpDZthcqXHoR1g7+Brl+VMJpFvHo=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "2d42ec613293985e8bd0d38751a3d18dca9e6a92",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "NUR",
+        "type": "github"
+      }
+    },
     "pkgs-by-name": {
       "locked": {
         "lastModified": 1769286518,
@@ -55,31 +78,9 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
+        "nur": "nur",
         "pkgs-by-name": "pkgs-by-name",
-        "rycee-pkgs": "rycee-pkgs",
         "treefmt-nix": "treefmt-nix"
-      }
-    },
-    "rycee-pkgs": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "dir": "pkgs/firefox-addons",
-        "lastModified": 1771560167,
-        "narHash": "sha256-BOM3uEUVgwzOrAz8D5oGQqrHchYvo82MAi8bG5st17E=",
-        "owner": "rycee",
-        "repo": "nur-expressions",
-        "rev": "de4e2afff64c80c5fb58f0f1a8c2983ef2dd3257",
-        "type": "gitlab"
-      },
-      "original": {
-        "dir": "pkgs/firefox-addons",
-        "owner": "rycee",
-        "repo": "nur-expressions",
-        "type": "gitlab"
       }
     },
     "treefmt-nix": {
