@@ -1,11 +1,10 @@
 {
-  inputs,
-  stdenv,
+  pkgs,
   lib,
 }:
 
 let
-  inherit (inputs.rycee-pkgs.lib.${stdenv.hostPlatform.system})
+  inherit (pkgs.nur.repos.rycee.firefox-addons)
     buildFirefoxXpiAddon
     ;
 in

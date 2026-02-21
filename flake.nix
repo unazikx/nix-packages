@@ -3,19 +3,20 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     pkgs-by-name.url = "github:drupol/pkgs-by-name-for-flake-parts";
 
-    rycee-pkgs = {
-      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    nur = {
+      url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
   };
 
@@ -40,17 +41,22 @@
 
         perSystem =
           {
-            pkgs,
             lib,
             config,
             system,
             ...
           }:
-          {
-            _module.args.pkgs = import inputs.nixpkgs {
+          let
+            pkgs = import inputs.nixpkgs {
               inherit system;
               config.allowUnfree = true;
+              overlays = [
+                inputs.nur.overlays.default
+              ];
             };
+          in
+          {
+            _module.args = { inherit pkgs; };
 
             pkgsDirectory = ./packages;
             pkgsNameSeparator = ".";
@@ -67,15 +73,16 @@
                   enable = true;
                   plugins =
                     ps:
-                    (lib.attrValues {
+                    lib.attrValues {
                       inherit (pkgs.python312Packages)
                         mdformat-beautysh
                         ;
-                    })
-                    ++ [
-                      config.packages.mdformat-black
-                      config.packages.mdformat-config
-                    ];
+
+                      inherit (config.packages)
+                        mdformat-black
+                        mdformat-config
+                        ;
+                    };
                 };
 
                 formatjson5 = {
@@ -85,5 +92,7 @@
               };
             };
           };
+
+        debug = true;
       };
 }
