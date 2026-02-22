@@ -65,6 +65,7 @@
               programs = {
                 beautysh.enable = true;
                 black.enable = true;
+                deadnix.enable = true;
                 nixfmt.enable = true;
                 toml-sort.enable = true;
                 yamlfmt.enable = true;
@@ -72,7 +73,7 @@
                 mdformat = {
                   enable = true;
                   plugins =
-                    ps:
+                    _ps:
                     lib.attrValues {
                       inherit (pkgs.python312Packages)
                         mdformat-beautysh
@@ -88,6 +89,29 @@
                 formatjson5 = {
                   enable = true;
                   indent = 2;
+                };
+
+                prettier = {
+                  enable = true;
+                  includes = [
+                    "*.cjs"
+                    "*.css"
+                    "*.html"
+                    "*.js"
+                    "*.mjs"
+                    "*.scss"
+                    "*.ts"
+                    "*.tsx"
+                    "*.vue"
+                  ];
+
+                  settings = {
+                    bracketSameLine = true;
+                    bracketSpacing = true;
+                    embeddedLanguageFormatting = "auto";
+                    tabWidth = 2;
+                    useTabs = true;
+                  };
                 };
               };
             };
