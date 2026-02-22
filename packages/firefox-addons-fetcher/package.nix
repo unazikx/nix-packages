@@ -6,7 +6,7 @@
   lib,
 }:
 
-python312Packages.buildPythonApplication (old: {
+python312Packages.buildPythonApplication (_old: {
   pname = baseNameOf ./.;
   version = "git";
   format = "other";

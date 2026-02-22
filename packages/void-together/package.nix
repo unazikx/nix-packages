@@ -5,7 +5,7 @@
   lib,
 }:
 
-buildNpmPackage (old: {
+buildNpmPackage (_old: {
   pname = baseNameOf ./.;
   version = "1.0.1";
 
@@ -17,11 +17,10 @@ buildNpmPackage (old: {
   };
 
   npmDepsHash = "sha256-0OevmrVW2yk0nMqcFbjvx8xjyXLuuDxBYU2//nDHuI8=";
-  dontNpmBuild = true;
-
-  nativeBuildInputs = [ makeWrapper ];
 
   npmInstallFlags = "ci";
+  dontNpmBuild = true;
+
   installPhase = ''
     mkdir -p $out/bin $out/share/void-together
     cp -r * $out/share/void-together

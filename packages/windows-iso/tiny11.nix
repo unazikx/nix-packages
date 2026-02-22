@@ -4,12 +4,12 @@
   lib,
 }:
 
-stdenv.mkDerivation (old: {
+stdenv.mkDerivation (_old: {
   pname = "tiny11";
   version = "202311";
 
   src = fetchurl {
-    name = "${old.pname}-${old.version}.iso";
+    name = "${_old.pname}-${_old.version}.iso";
     url = "https://archive.org/download/tiny11-2311/tiny11%202311%20x64.iso";
     # or   https://archive.org/download/tiny-11-NTDEV/tiny11%2023H2%20x64.iso
     # use another hash

@@ -4,13 +4,13 @@
   lib,
 }:
 
-python312Packages.buildPythonApplication (old: {
+python312Packages.buildPythonApplication (_old: {
   pname = "uvicorn";
   version = "0.40.0";
   pyproject = true;
 
   src = fetchPypi {
-    inherit (old)
+    inherit (_old)
       pname
       version
       ;

@@ -25,12 +25,12 @@
   lib,
 }:
 
-stdenv.mkDerivation (old: {
+stdenv.mkDerivation (_old: {
   pname = "occt";
   version = "15.0.13";
 
   src = fetchurl {
-    url = "https://www.ocbase.com/download-bin/edition:Personal/os:Linux/version:${old.version}";
+    url = "https://www.ocbase.com/download-bin/edition:Personal/os:Linux/version:${_old.version}";
     sha256 = "sha256-Ujrhv1on5LZGXd1rYlQGgPczb+4hli4E9lytAZu1Hpc=";
   };
 
@@ -73,7 +73,7 @@ stdenv.mkDerivation (old: {
     touch $out/opt/occt/use_home_config
 
     makeWrapper $out/opt/occt/occt $out/bin/occt \
-      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath old.buildInputs}" \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath _old.buildInputs}" \
       --set DOTNET_SYSTEM_GLOBALIZATION_INVARIANT 1 \
       --set SSL_CERT_FILE "${cacert}/etc/ssl/certs/ca-bundle.crt" \
       --set SSL_CERT_DIR "${cacert}/etc/ssl/certs" \
@@ -91,7 +91,7 @@ stdenv.mkDerivation (old: {
       exec = "occt %U";
       icon = "occt";
       desktopName = "OverClock Checking Tool";
-      comment = old.meta.description;
+      comment = _old.meta.description;
       categories = [
         "System"
         "Utility"

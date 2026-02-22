@@ -7,13 +7,13 @@
   uvicorn ? callPackage ./uvicorn.nix { },
 }:
 
-python312Packages.buildPythonApplication (old: {
+python312Packages.buildPythonApplication (_old: {
   pname = "anicli_ru";
   version = "6.0.2";
   pyproject = true;
 
   src = fetchPypi {
-    inherit (old)
+    inherit (_old)
       pname
       version
       ;

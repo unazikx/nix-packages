@@ -4,14 +4,14 @@
   lib,
 }:
 
-python312Packages.buildPythonPackage (old: {
+python312Packages.buildPythonPackage (_old: {
   pname = baseNameOf ./.;
   version = "11.1.0";
   pyproject = true;
 
   src = fetchPypi {
     pname = "HdRezkaApi";
-    inherit (old)
+    inherit (_old)
       version
       ;
     hash = "sha256-ks8C+kBVI99c8CGyCMGv11ZvslKoSrBkcUXoZnNLnHU=";

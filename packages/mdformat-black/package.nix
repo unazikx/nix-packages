@@ -4,7 +4,7 @@
   lib,
 }:
 
-python312Packages.buildPythonPackage (old: {
+python312Packages.buildPythonPackage (_old: {
   pname = baseNameOf ./.;
   version = "0.1.1";
   pyproject = true;
@@ -12,7 +12,7 @@ python312Packages.buildPythonPackage (old: {
   src = fetchFromGitHub {
     owner = "hukkin";
     repo = "mdformat-black";
-    tag = old.version;
+    tag = _old.version;
     hash = "sha256-HAuge6naa3BOX/xLVUFOdG76iNmk4X5WEuAPIMWgPXw=";
   };
 
@@ -31,7 +31,7 @@ python312Packages.buildPythonPackage (old: {
   meta = {
     description = "Mdformat plugin to Blacken Python code blocks";
     homepage = "https://github.com/hukkin/mdformat-black";
-    changelog = "https://github.com/hukkin/mdformat-black/releases/tag/${old.src.tag}";
+    changelog = "https://github.com/hukkin/mdformat-black/releases/tag/${_old.src.tag}";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ unazikx ];
   };

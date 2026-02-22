@@ -4,7 +4,7 @@
   lib,
 }:
 
-python312Packages.buildPythonPackage (old: {
+python312Packages.buildPythonPackage (_old: {
   pname = baseNameOf ./.;
   version = "0.2.1";
   pyproject = true;
@@ -12,7 +12,7 @@ python312Packages.buildPythonPackage (old: {
   src = fetchFromGitHub {
     owner = "hukkin";
     repo = "mdformat-config";
-    tag = old.version;
+    tag = _old.version;
     hash = "sha256-v6xtU6qZMhUnWFcCJOm9CcmLe6nKxmV9qGDM8o8MPe4=";
   };
 
@@ -32,7 +32,7 @@ python312Packages.buildPythonPackage (old: {
   meta = {
     description = "Mdformat plugin to beautify configuration and data-serialization formats";
     homepage = "https://github.com/hukkin/mdformat-config";
-    changelog = "https://github.com/hukkin/mdformat-config/releases/tag/${old.src.tag}";
+    changelog = "https://github.com/hukkin/mdformat-config/releases/tag/${_old.src.tag}";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ unazikx ];
   };
