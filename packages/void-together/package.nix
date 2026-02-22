@@ -1,7 +1,6 @@
 {
   buildNpmPackage,
   fetchFromGitHub,
-  makeWrapper,
   lib,
 }:
 
