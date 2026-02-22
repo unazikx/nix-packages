@@ -27,6 +27,6 @@ stdenv.mkDerivation (_old: {
     homepage = "https://archive.org/details/tiny-11-NTDEV";
     license = lib.licenses.unlicense; # it is unfree
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
   };
 })

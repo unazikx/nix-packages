@@ -32,6 +32,6 @@ python312Packages.buildPythonApplication (_old: {
     description = "Parse anime from RU websites";
     homepage = "https://github.com/vypivshiy/anicli-api";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
   };
 })

@@ -49,6 +49,6 @@ stdenv.mkDerivation {
     };
     homepage = "https://stroydocs.com/info/gost_fonts";
     platforms = lib.platforms.linux;
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
   };
 }

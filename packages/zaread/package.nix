@@ -44,7 +44,7 @@ stdenv.mkDerivation {
     homepage = "https://github.com/paoloap/zaread";
     license = lib.licenses.gpl3;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "zaread";
   };
 }

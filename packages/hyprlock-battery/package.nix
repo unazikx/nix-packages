@@ -18,7 +18,7 @@ stdenv.mkDerivation {
     description = "Shows battery level on hyprlock screen";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "hyprlock-battery";
   };
 }

@@ -19,7 +19,7 @@ stdenv.mkDerivation {
     homepage = "https://github.com/dylanaraps/torque";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "torque";
   };
 }

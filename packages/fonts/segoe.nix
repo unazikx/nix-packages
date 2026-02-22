@@ -31,6 +31,6 @@ stdenv.mkDerivation {
     };
     homepage = "https://github.com/mrbvrz/segoe-ui-linux";
     platforms = lib.platforms.linux;
-    maintainers = with lib.maintainers; [ azikx ];
+    maintainers = with lib.maintainers; [ unazikx ];
   };
 }
