@@ -33,6 +33,7 @@ in
         "notifications"
         "tabs"
         "declarativeNetRequestWithHostAccess"
+        "<all_urls>"
       ];
       platforms = platforms.all;
     };
