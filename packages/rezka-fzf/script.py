@@ -15,6 +15,7 @@ Features:
     - Search and browse HDRezka content from terminal
     - Watch movies and series with various video players
     - Clean terminal interface built on fzf
+    - Export all episode URLs for any quality
 """
 
 
@@ -23,16 +24,19 @@ class Config:
         system = platform.system()
 
         if system == "Windows":
-            appdata = os.getenv("APPDATA")
+            # APPDATA may be unset in some environments; fall back to USERPROFILE
+            appdata = os.getenv("APPDATA") or os.path.join(
+                os.getenv("USERPROFILE", os.path.expanduser("~")), "AppData", "Roaming"
+            )
             self.config_dir = os.path.join(appdata, "hdrezka-tui")
         elif system == "Darwin":
-            home = os.path.expanduser("~")
             self.config_dir = os.path.join(
-                home, "Library", "Application Support", "hdrezka-tui"
+                os.path.expanduser("~"), "Library", "Application Support", "hdrezka-tui"
             )
         else:
-            home = os.path.expanduser("~")
-            self.config_dir = os.path.join(home, ".config", "hdrezka-tui")
+            # Linux / BSD / etc — respect XDG_CONFIG_HOME if set
+            xdg = os.getenv("XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config"))
+            self.config_dir = os.path.join(xdg, "hdrezka-tui")
 
         self.config_path = os.path.join(self.config_dir, "config.json")
         self._cache = None
@@ -54,15 +58,64 @@ class Config:
             }
 
             os.makedirs(self.config_dir, exist_ok=True)
-            with open(self.config_path, "w") as f:
+            with open(self.config_path, "w", encoding="utf-8") as f:
                 json.dump(config_data, f, indent=4)
 
             print(f"\nConfiguration saved to: {self.config_path}\n")
 
+    def load_auth_file(self, path: str):
+        """Load username/password from a plain-text file.
+
+        Accepted formats (one per line, any order):
+            login@example.com
+            MyP@ssw0rd
+
+        Or key=value:
+            username=login@example.com
+            password=MyP@ssw0rd
+
+        Lines starting with # are ignored.
+        """
+        path = os.path.expanduser(path)
+        if not os.path.exists(path):
+            print(f"Auth file not found: {path}")
+            sys.exit(1)
+
+        with open(path, encoding="utf-8") as f:
+            lines = [l.strip() for l in f if l.strip() and not l.startswith("#")]
+
+        data = {}
+        for line in lines:
+            if "=" in line:
+                key, _, val = line.partition("=")
+                key = key.strip().lower()
+                val = val.strip()
+                if key in ("username", "login", "email", "user"):
+                    data["username"] = val
+                elif key in ("password", "pass", "pwd"):
+                    data["password"] = val
+            else:
+                # bare values: first = username, second = password
+                if "username" not in data:
+                    data["username"] = line
+                elif "password" not in data:
+                    data["password"] = line
+
+        if "username" not in data or "password" not in data:
+            print(f"Auth file must contain username and password.\n"
+                  f"Expected format:\n  username=...\n  password=...\nor two plain lines.")
+            sys.exit(1)
+
+        # Override cache so setup() picks them up
+        cache = self._load_cache()
+        cache["username"] = data["username"]
+        cache["password"] = data["password"]
+        self._cache = cache
+
     def _load_cache(self):
         if self._cache is None:
             try:
-                with open(self.config_path) as f:
+                with open(self.config_path, encoding="utf-8") as f:
                     self._cache = json.load(f)
             except (FileNotFoundError, json.JSONDecodeError):
                 self._cache = {}
@@ -184,8 +237,10 @@ class Player:
 
 
 class HdRezkaApp:
-    def __init__(self):
+    def __init__(self, auth_file: str = None):
         self.config = Config()
+        if auth_file:
+            self.config.load_auth_file(auth_file)
         self.session = None
         self.current_content = None
         self.fzf = FzfSelector()
@@ -268,20 +323,15 @@ class HdRezkaApp:
             return False
 
     def is_series(self):
-        """Проверка является ли контент сериалом"""
         try:
-            # Безопасная проверка через hasattr без доступа к значению
             if hasattr(self.current_content, "seriesInfo"):
-                # Пробуем получить значение, но если это property, которое вызывает ошибку - ловим исключение
                 try:
                     series_info = self.current_content.seriesInfo
                     if series_info is not None:
                         return True
                 except Exception:
-                    # Если получили исключение при доступе - значит это не сериал
                     pass
 
-            # Проверяем episodesInfo
             if hasattr(self.current_content, "episodesInfo"):
                 try:
                     episodes = self.current_content.episodesInfo
@@ -290,7 +340,6 @@ class HdRezkaApp:
                 except Exception:
                     pass
 
-            # Проверяем тип контента
             if hasattr(self.current_content, "type"):
                 try:
                     content_type = str(self.current_content.type).lower()
@@ -301,15 +350,12 @@ class HdRezkaApp:
 
             return False
         except Exception:
-            # Если вообще всё сломалось - считаем что это фильм
             return False
 
     def get_movie_translations(self):
-        """Get available translations for movies"""
         translations = []
 
         try:
-            # Метод 1: translators_names (основной для фильмов)
             if (
                 hasattr(self.current_content, "translators_names")
                 and self.current_content.translators_names
@@ -321,7 +367,6 @@ class HdRezkaApp:
                     )
                 return translations
 
-            # Метод 2: translators словарь (альтернативный формат)
             if (
                 hasattr(self.current_content, "translators")
                 and self.current_content.translators
@@ -339,33 +384,10 @@ class HdRezkaApp:
             print(f"Error getting translations: {e}")
             return translations
 
-    def get_series_translations_from_seriesInfo(self, season, episode):
-        """Получение переводов из seriesInfo"""
-        translations = []
-        try:
-            if hasattr(self.current_content, "seriesInfo"):
-                series_info = self.current_content.seriesInfo
-                # Здесь нужно адаптировать под структуру seriesInfo
-                # Обычно переводы хранятся в атрибуте translators
-                if hasattr(self.current_content, "translators"):
-                    for tid, tdata in self.current_content.translators.items():
-                        translations.append(
-                            {
-                                "translator_id": tid,
-                                "translator_name": tdata.get("name", "Unknown"),
-                                "premium": tdata.get("premium", False),
-                            }
-                        )
-        except:
-            pass
-        return translations
-
     def get_series_translations(self, season_num, episode_num):
-        """Get available translations for a specific episode"""
         translations = []
 
         try:
-            # Пробуем получить через episodesInfo
             if hasattr(self.current_content, "episodesInfo"):
                 try:
                     episodes_info = self.current_content.episodesInfo
@@ -391,7 +413,6 @@ class HdRezkaApp:
                 except:
                     pass
 
-            # Если не нашли переводы в эпизодах, пробуем получить из общих переводов
             if not translations and hasattr(self.current_content, "translators"):
                 for tid, tdata in self.current_content.translators.items():
                     name = tdata.get("name", "Unknown")
@@ -403,18 +424,85 @@ class HdRezkaApp:
             print(f"Error getting series translations: {e}")
             return translations
 
+    def _select_translator(self, season=None, episode=None):
+        is_series_content = self.is_series()
+
+        if is_series_content and season is not None and episode is not None:
+            translations = self.get_series_translations(season, episode)
+        else:
+            translations = self.get_movie_translations()
+
+        if not translations:
+            return None
+
+        if len(translations) == 1:
+            return translations[0]["value"]
+
+        prompt = "Select Translation"
+        if season and episode:
+            prompt = f"S{season}E{episode} Translation"
+
+        return self.fzf.select(translations, prompt=prompt)
+
+    def _get_stream_object(self, season=None, episode=None, translator_id=None):
+        if self.is_series() and season is not None and episode is not None:
+            return self.current_content.getStream(
+                season=season,
+                episode=str(episode),
+                translation=translator_id,
+            )
+        if translator_id:
+            return self.current_content.getStream(translation=translator_id)
+        return self.current_content.getStream()
+
+    def _get_available_qualities(self, stream):
+        try:
+            videos = stream.videos
+            if isinstance(videos, dict) and videos:
+                order = ["2160p", "1080p Ultra", "1080p", "720p", "480p", "360p"]
+                available = [q for q in order if q in videos]
+                for q in videos:
+                    if q not in available:
+                        available.append(q)
+                return available
+        except Exception:
+            pass
+        return []
+
     def show_content_menu(self):
         content = self.current_content
         content_type = "Series" if self.is_series() else "Movie"
 
-        menu_items = [
-            {"display": f"Title: {content.name}", "value": None},
-            {"display": f"Original: {content.origName}", "value": None},
-        ]
+        menu_items = []
+
+        # ── Actions ──
+        menu_items.append({"display": "Watch", "value": "watch"})
+
+        if self.is_series():
+            menu_items.append(
+                {"display": "Export all episode URLs to file", "value": "export_urls"}
+            )
+        else:
+            menu_items.append(
+                {"display": "Export movie URLs to file", "value": "export_movie_urls"}
+            )
+
+        if hasattr(content, "otherParts") and content.otherParts:
+            menu_items.append(
+                {
+                    "display": f"Other Parts ({len(content.otherParts)} available)",
+                    "value": "other_parts",
+                }
+            )
+
+        # ── Info ──
+        menu_items.append({"display": "━━━ Info ━━━", "value": None})
+        menu_items.append({"display": f"Title: {content.name}", "value": None})
+        menu_items.append({"display": f"Original: {content.origName}", "value": None})
 
         if hasattr(content, "description") and content.description:
             desc = (
-                content.description[:150] + ""
+                content.description[:150] + "…"
                 if len(content.description) > 150
                 else content.description
             )
@@ -427,18 +515,6 @@ class HdRezkaApp:
                 {"display": f"Rating: {content.rating}", "value": None},
             ]
         )
-
-        menu_items.append({"display": "━━━ Available Actions ━━━", "value": None})
-
-        if hasattr(content, "otherParts") and content.otherParts:
-            menu_items.append(
-                {
-                    "display": f"View Other Parts ({len(content.otherParts)} available)",
-                    "value": "other_parts",
-                }
-            )
-
-        menu_items.append({"display": "Watch", "value": "watch"})
 
         return self.fzf.select(menu_items, prompt=f"{content_type} Menu")
 
@@ -463,18 +539,15 @@ class HdRezkaApp:
         return False
 
     def select_episode(self):
-        """Выбор эпизода для сериала"""
         try:
             episodes_info = None
 
-            # Пробуем получить episodesInfo
             if hasattr(self.current_content, "episodesInfo"):
                 try:
                     episodes_info = self.current_content.episodesInfo
                 except Exception:
                     pass
 
-            # Пробуем получить через seriesInfo если episodesInfo не сработал
             if not episodes_info and hasattr(self.current_content, "seriesInfo"):
                 try:
                     series_info = self.current_content.seriesInfo
@@ -491,10 +564,9 @@ class HdRezkaApp:
                                                 if str(ep_num).isdigit()
                                                 else ep_num
                                             ),
-                                            "translations": [],  # Переводы будут получены позже
+                                            "translations": [],
                                         }
                                     )
-
                                 episodes_info.append(
                                     {
                                         "season": (
@@ -512,7 +584,6 @@ class HdRezkaApp:
                 print("This content doesn't have episodes")
                 return None, None
 
-            # Выбор сезона
             if len(episodes_info) == 1:
                 season = episodes_info[0]
             else:
@@ -535,7 +606,6 @@ class HdRezkaApp:
                 print("Invalid season data")
                 return None, None
 
-            # Выбор эпизода
             episodes = season.get("episodes", [])
             if not episodes:
                 print(f"No episodes for season {season_num}")
@@ -563,139 +633,215 @@ class HdRezkaApp:
             print(f"Error selecting episode: {e}")
             return None, None
 
+    def _get_all_episodes(self):
+        episodes_info = None
+        try:
+            if hasattr(self.current_content, "episodesInfo"):
+                episodes_info = self.current_content.episodesInfo
+        except Exception:
+            pass
+
+        if not episodes_info and hasattr(self.current_content, "seriesInfo"):
+            try:
+                series_info = self.current_content.seriesInfo
+                if series_info and isinstance(series_info, dict):
+                    episodes_info = []
+                    for season_num, episodes in series_info.items():
+                        if isinstance(episodes, (list, tuple)):
+                            episodes_info.append({
+                                "season": int(season_num) if str(season_num).isdigit() else season_num,
+                                "episodes": [
+                                    {"episode": int(e) if str(e).isdigit() else e}
+                                    for e in episodes
+                                ],
+                            })
+            except Exception:
+                pass
+
+        if not episodes_info:
+            return []
+
+        return [
+            (s["season"], e["episode"])
+            for s in episodes_info
+            for e in s.get("episodes", [])
+            if s.get("season") is not None and e.get("episode") is not None
+        ]
+
+    def export_all_urls(self):
+        translator_id = self._select_translator()
+        if translator_id is None and self.get_movie_translations():
+            return  # user cancelled
+
+        all_eps = self._get_all_episodes()
+        if not all_eps:
+            return
+
+        # Detect qualities silently via first episode
+        try:
+            test_stream = self._get_stream_object(all_eps[0][0], all_eps[0][1], translator_id)
+            qualities = self._get_available_qualities(test_stream)
+        except Exception as ex:
+            print(f"Error: {ex}")
+            return
+
+        if not qualities:
+            return
+
+        quality = self.fzf.select(
+            [{"display": q, "value": q} for q in qualities],
+            prompt="Quality for export",
+        )
+        if not quality:
+            return
+
+        # Collect all URLs silently
+        title = self.current_content.name
+        results = {}
+        for s, e in all_eps:
+            try:
+                stream = self._get_stream_object(s, e, translator_id)
+                urls = stream.videos.get(quality, [])
+                if not isinstance(urls, list):
+                    urls = [urls]
+            except Exception as ex:
+                urls = [f"ERROR: {ex}"]
+            results.setdefault(s, []).append((e, urls))
+
+        # Save directly to file — no terminal output, no prompt
+        safe_title = title.replace("/", "_").replace("\\", "_")
+        filename = f"{safe_title}_{quality.replace(' ', '_')}_urls.txt"
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(f"{title} — {quality}\n")
+            f.write("=" * 60 + "\n\n")
+            for sn in sorted(results.keys()):
+                f.write(f"Season {sn}\n")
+                f.write("-" * 40 + "\n")
+                for en, urls in sorted(results[sn], key=lambda x: x[0]):
+                    f.write(f"\nS{sn:02d}E{en:02d}\n")
+                    for i, url in enumerate(urls, 1):
+                        prefix = f"  [{i}] " if len(urls) > 1 else "  "
+                        f.write(f"{prefix}{url}\n")
+                f.write("\n")
+
+        print(f"\033[32m✓\033[0m {len(all_eps)} episodes ({quality}) → \033[1m{filename}\033[0m")
+
+    def export_movie_urls(self):
+        translator_id = self._select_translator()
+        if translator_id is None and self.get_movie_translations():
+            return  # user cancelled
+
+        # Get stream
+        try:
+            stream = self._get_stream_object(translator_id=translator_id)
+            qualities = self._get_available_qualities(stream)
+        except Exception as ex:
+            print(f"Error: {ex}")
+            return
+
+        if not qualities:
+            return
+
+        quality = self.fzf.select(
+            [{"display": q, "value": q} for q in qualities],
+            prompt="Quality for export",
+        )
+        if not quality:
+            return
+
+        # Get URLs for all qualities or just selected
+        title = self.current_content.name
+        safe_title = title.replace("/", "_").replace("\\", "_")
+        filename = f"{safe_title}_{quality.replace(' ', '_')}_urls.txt"
+
+        try:
+            urls = stream.videos.get(quality, [])
+            if not isinstance(urls, list):
+                urls = [urls]
+        except Exception as ex:
+            print(f"Error getting URLs: {ex}")
+            return
+
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(f"{title} — {quality}\n")
+            f.write("=" * 60 + "\n\n")
+            for i, url in enumerate(urls, 1):
+                prefix = f"[{i}] " if len(urls) > 1 else ""
+                f.write(f"{prefix}{url}\n")
+
+        print(f"\033[32m✓\033[0m {title} ({quality}) → \033[1m{filename}\033[0m")
+
     def play_content(self, season=None, episode=None):
         try:
-            translator_id = None
-            max_retries = 3
-            retry_count = 0
-
-            # Определяем тип контента безопасно
             is_series_content = False
             try:
                 is_series_content = self.is_series()
-            except Exception as e:
-                print(f"Warning: Could not determine content type: {e}")
-                # Если не можем определить, считаем по наличию season/episode
+            except Exception:
                 is_series_content = season is not None and episode is not None
 
-            while retry_count < max_retries:
+            stream = None
+            for attempt in range(3):
                 try:
-                    # Выбор перевода через fzf
-                    if is_series_content:
-                        # Для сериалов
-                        if season is not None and episode is not None:
-                            translations = self.get_series_translations(season, episode)
-                        else:
-                            # Если сезон/эпизод не указаны, но контент - сериал
-                            print("This is a series. Please select episode first.")
-                            return
-                    else:
-                        # Для фильмов
-                        translations = self.get_movie_translations()
-
-                    if translations:
-                        if len(translations) == 1:
-                            translator_id = translations[0]["value"]
-                            trans_name = translations[0].get("display", "Unknown")
-                            print(f"Using translation: {trans_name}")
-                        else:
-                            prompt = "Select Translation"
-                            if season and episode:
-                                prompt = f"S{season}E{episode} Translation"
-
-                            selected = self.fzf.select(translations, prompt=prompt)
-                            if selected:
-                                translator_id = selected
-                            else:
-                                return
-                    else:
-                        print("No translations available")
-                        # Пробуем без перевода
-                        translator_id = None
-
-                    # Получаем поток
-                    if is_series_content and season is not None and episode is not None:
-                        stream = self.current_content.getStream(
-                            season=season,
-                            episode=str(episode),
-                            translation=translator_id,
+                    translator_id = self._select_translator(season, episode)
+                    if translator_id is None:
+                        translations = (
+                            self.get_series_translations(season, episode)
+                            if is_series_content
+                            else self.get_movie_translations()
                         )
-                    else:
-                        if translator_id:
-                            stream = self.current_content.getStream(
-                                translation=translator_id
-                            )
-                        else:
-                            stream = self.current_content.getStream()
+                        if translations:
+                            return  # user cancelled fzf
 
-                    # Если дошли сюда без ошибок - выходим из цикла
+                    stream = self._get_stream_object(season, episode, translator_id)
                     break
 
-                except UnicodeDecodeError as e:
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        print(
-                            f"\n⚠️  Decoding error, retrying ({retry_count}/{max_retries})"
-                        )
-                        continue
-                    else:
-                        print(f"\n❌ Failed after {max_retries} attempts: {e}")
+                except UnicodeDecodeError:
+                    if attempt == 2:
+                        print(f"❌ Failed after 3 attempts")
                         return
+                    print(f"⚠️  Decode error, retrying ({attempt+1}/3)")
+                    continue
                 except Exception as e:
                     print(f"Error getting stream: {e}")
-                    import traceback
-
-                    traceback.print_exc()
                     return
 
-            # Выбор качества
-            qualities = ["2160", "1080 Ultra", "1080", "720", "480", "360"]
-            available = []
-            for q in qualities:
-                try:
-                    stream(q)
-                    available.append(q)
-                except:
-                    pass
+            if stream is None:
+                return
 
+            available = self._get_available_qualities(stream)
             if not available:
                 print("No qualities available")
                 return
 
-            quality_items = [{"display": f"{q}p", "value": q} for q in available]
+            quality_items = [{"display": q, "value": q} for q in available]
             quality = self.fzf.select(quality_items, prompt="Quality")
-
             if not quality:
                 return
 
-            # Получаем URL
-            urls = stream(quality)
-
-            # Обработка различных форматов URL
-            if isinstance(urls, bytes):
-                try:
-                    urls = urls.decode("utf-8", errors="ignore")
-                except:
-                    urls = str(urls)
-
-            if isinstance(urls, str):
-                if urls.strip().startswith("["):
-                    try:
-                        urls = json.loads(urls)
-                    except:
-                        urls = [urls]
-                else:
+            try:
+                urls = stream.videos.get(quality, [])
+                if not isinstance(urls, list):
                     urls = [urls]
-
-            # Выбор URL если их несколько
-            if isinstance(urls, list):
-                if len(urls) == 1:
-                    url = urls[0]
+            except Exception:
+                raw = stream(quality)
+                if isinstance(raw, bytes):
+                    raw = raw.decode("utf-8", errors="ignore")
+                if isinstance(raw, str):
+                    urls = json.loads(raw) if raw.strip().startswith("[") else [raw]
+                elif isinstance(raw, list):
+                    urls = raw
                 else:
-                    url_items = [{"display": str(u)[:132], "value": u} for u in urls]
-                    url = self.fzf.select(url_items, prompt="Select URL")
+                    urls = [str(raw)]
+
+            if not urls:
+                print("No URLs available for selected quality")
+                return
+
+            if len(urls) == 1:
+                url = urls[0]
             else:
-                url = urls
+                url_items = [{"display": str(u)[:132], "value": u} for u in urls]
+                url = self.fzf.select(url_items, prompt="Select Mirror")
 
             if url:
                 title = self.current_content.name
@@ -705,9 +851,6 @@ class HdRezkaApp:
 
         except Exception as e:
             print(f"Playback error: {e}")
-            import traceback
-
-            traceback.print_exc()
 
     def run(self):
         if not self.setup():
@@ -717,7 +860,6 @@ class HdRezkaApp:
             print("fzf not found. Please install fzf")
             return
 
-        # Обработка Ctrl+C
         def sigint_handler(sig, frame):
             print("\nGoodbye!")
             sys.exit(0)
@@ -726,7 +868,6 @@ class HdRezkaApp:
 
         while True:
             try:
-                # Поиск контента
                 item = self.search_and_select()
                 if not item:
                     continue
@@ -734,7 +875,6 @@ class HdRezkaApp:
                 if not self.load_content(item):
                     continue
 
-                # Меню контента
                 while True:
                     action = self.show_content_menu()
 
@@ -743,6 +883,14 @@ class HdRezkaApp:
 
                     if action == "other_parts":
                         self.handle_other_parts()
+                        continue
+
+                    if action == "export_urls":
+                        self.export_all_urls()
+                        continue
+
+                    if action == "export_movie_urls":
+                        self.export_movie_urls()
                         continue
 
                     if action == "watch":
@@ -761,7 +909,22 @@ class HdRezkaApp:
 
 
 def main():
-    app = HdRezkaApp()
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        prog="rezka-fzf",
+        description="HDRezka terminal UI built on fzf",
+    )
+    parser.add_argument(
+        "--authFile",
+        metavar="PATH",
+        help="Path to a file containing username and password "
+             "(plain lines or key=value format). "
+             "Example: rezka-fzf --authFile ./login.txt",
+    )
+    args = parser.parse_args()
+
+    app = HdRezkaApp(auth_file=args.authFile)
     app.run()
 
 

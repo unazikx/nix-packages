@@ -6,15 +6,15 @@
 
 python312Packages.buildPythonPackage (_old: {
   pname = baseNameOf ./.;
-  version = "11.1.0";
+  version = "11.2.0";
   pyproject = true;
 
   src = fetchPypi {
-    pname = "HdRezkaApi";
+    pname = "hdrezkaapi";
     inherit (_old)
       version
       ;
-    hash = "sha256-ks8C+kBVI99c8CGyCMGv11ZvslKoSrBkcUXoZnNLnHU=";
+    hash = "sha256-AcBjDTyEAGAJ/ffqyKrUH21Z5cb/xiyA26aIrbAZhBk=";
   };
 
   dependencies = [
