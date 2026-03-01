@@ -28,15 +28,17 @@ class Config:
             appdata = os.getenv("APPDATA") or os.path.join(
                 os.getenv("USERPROFILE", os.path.expanduser("~")), "AppData", "Roaming"
             )
-            self.config_dir = os.path.join(appdata, "hdrezka-tui")
+            self.config_dir = os.path.join(appdata, "rezka-fzf")
         elif system == "Darwin":
             self.config_dir = os.path.join(
-                os.path.expanduser("~"), "Library", "Application Support", "hdrezka-tui"
+                os.path.expanduser("~"), "Library", "Application Support", "rezka-fzf"
             )
         else:
             # Linux / BSD / etc — respect XDG_CONFIG_HOME if set
-            xdg = os.getenv("XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config"))
-            self.config_dir = os.path.join(xdg, "hdrezka-tui")
+            xdg = os.getenv(
+                "XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config")
+            )
+            self.config_dir = os.path.join(xdg, "rezka-fzf")
 
         self.config_path = os.path.join(self.config_dir, "config.json")
         self._cache = None
@@ -102,8 +104,10 @@ class Config:
                     data["password"] = line
 
         if "username" not in data or "password" not in data:
-            print(f"Auth file must contain username and password.\n"
-                  f"Expected format:\n  username=...\n  password=...\nor two plain lines.")
+            print(
+                f"Auth file must contain username and password.\n"
+                f"Expected format:\n  username=...\n  password=...\nor two plain lines."
+            )
             sys.exit(1)
 
         # Override cache so setup() picks them up
@@ -648,13 +652,19 @@ class HdRezkaApp:
                     episodes_info = []
                     for season_num, episodes in series_info.items():
                         if isinstance(episodes, (list, tuple)):
-                            episodes_info.append({
-                                "season": int(season_num) if str(season_num).isdigit() else season_num,
-                                "episodes": [
-                                    {"episode": int(e) if str(e).isdigit() else e}
-                                    for e in episodes
-                                ],
-                            })
+                            episodes_info.append(
+                                {
+                                    "season": (
+                                        int(season_num)
+                                        if str(season_num).isdigit()
+                                        else season_num
+                                    ),
+                                    "episodes": [
+                                        {"episode": int(e) if str(e).isdigit() else e}
+                                        for e in episodes
+                                    ],
+                                }
+                            )
             except Exception:
                 pass
 
@@ -679,7 +689,9 @@ class HdRezkaApp:
 
         # Detect qualities silently via first episode
         try:
-            test_stream = self._get_stream_object(all_eps[0][0], all_eps[0][1], translator_id)
+            test_stream = self._get_stream_object(
+                all_eps[0][0], all_eps[0][1], translator_id
+            )
             qualities = self._get_available_qualities(test_stream)
         except Exception as ex:
             print(f"Error: {ex}")
@@ -724,7 +736,9 @@ class HdRezkaApp:
                         f.write(f"{prefix}{url}\n")
                 f.write("\n")
 
-        print(f"\033[32m✓\033[0m {len(all_eps)} episodes ({quality}) → \033[1m{filename}\033[0m")
+        print(
+            f"\033[32m✓\033[0m {len(all_eps)} episodes ({quality}) → \033[1m{filename}\033[0m"
+        )
 
     def export_movie_urls(self):
         translator_id = self._select_translator()
@@ -919,8 +933,8 @@ def main():
         "--authFile",
         metavar="PATH",
         help="Path to a file containing username and password "
-             "(plain lines or key=value format). "
-             "Example: rezka-fzf --authFile ./login.txt",
+        "(plain lines or key=value format). "
+        "Example: rezka-fzf --authFile ./login.txt",
     )
     args = parser.parse_args()
 
