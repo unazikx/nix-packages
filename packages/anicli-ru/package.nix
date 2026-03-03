@@ -1,10 +1,9 @@
 {
-  callPackage,
-  fetchPypi,
   python312Packages,
+  fetchPypi,
+  anicli-api,
+  uvicorn,
   lib,
-  anicli-api ? callPackage ./anicli-api.nix { },
-  uvicorn ? callPackage ./uvicorn.nix { },
 }:
 
 python312Packages.buildPythonApplication (_old: {
