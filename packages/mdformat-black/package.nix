@@ -33,6 +33,6 @@ python312Packages.buildPythonPackage (_old: {
     homepage = "https://github.com/hukkin/mdformat-black";
     changelog = "https://github.com/hukkin/mdformat-black/releases/tag/${_old.src.tag}";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
   };
 })

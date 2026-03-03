@@ -23,7 +23,7 @@ python312Packages.buildPythonApplication {
     homepage = "https://gist.github.com/unazikx/261536eed5cefe385fa1a0b0eed7b2c2";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "hasher";
   };
 }

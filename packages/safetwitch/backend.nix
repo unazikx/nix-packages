@@ -22,7 +22,7 @@ buildGoModule {
     homepage = "https://github.com/unazikx/safetwitch-backend";
     license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "safetwitch";
   };
 }

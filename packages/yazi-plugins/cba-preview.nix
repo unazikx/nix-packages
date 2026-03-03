@@ -19,6 +19,6 @@ yaziPlugins.mkYaziPlugin {
     description = "Yazi plugin to preview Comic Book Archive";
     homepage = "https://github.com/navysky12/comicthumb.yazi";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
   };
 }

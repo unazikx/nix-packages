@@ -109,7 +109,7 @@ stdenv.mkDerivation (_old: {
       "x86_64-linux"
       "x86_64-windows"
     ];
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "occt";
   };
 })

@@ -26,7 +26,7 @@ stdenv.mkDerivation {
     homepage = "https://github.com/unazikx/wofi-bluetooth";
     license = lib.licenses.gpl3;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "wofi-bt";
   };
 }

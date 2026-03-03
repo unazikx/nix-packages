@@ -19,6 +19,6 @@ yaziPlugins.mkYaziPlugin {
     description = "Simple system clipboard for yazi";
     homepage = "https://github.com/alterkeyy/wl-clipboard.yazi";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
   };
 }

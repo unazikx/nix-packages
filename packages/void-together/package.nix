@@ -28,8 +28,8 @@ buildNpmPackage (_old: {
   meta = {
     description = "VOTV server for multiplayer";
     homepage = "https://github.com/VoidTogether/VoidTogether-Server";
-    license = lib.licenses.agpl3Only; # it is unfree
+    license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
   };
 })

@@ -19,6 +19,6 @@ yaziPlugins.mkYaziPlugin {
     description = "Yazi plugin for djvu preview";
     homepage = "https://github.com/Shallow-Seek/djvu-view.yazi";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ unazikx ];
+    # maintainers = with lib.maintainers; [ unazikx ];
   };
 }
