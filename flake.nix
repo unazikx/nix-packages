@@ -73,10 +73,18 @@
               programs = {
                 beautysh.enable = true;
                 black.enable = true;
-                deadnix.enable = true;
-                nixfmt.enable = true;
                 toml-sort.enable = true;
                 yamlfmt.enable = true;
+
+                deadnix = {
+                  enable = true;
+                  excludes = [ "packages/firefox-addons/output.nix" ];
+                };
+
+                nixfmt = {
+                  enable = true;
+                  excludes = [ "packages/firefox-addons/output.nix" ];
+                };
 
                 mdformat = {
                   enable = true;
