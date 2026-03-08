@@ -9,10 +9,10 @@ fishPlugins.buildFishPlugin {
   version = "git";
 
   src = fetchFromGitHub {
-    owner = "sshilovsky";
+    owner = "Tijs-B";
     repo = "fish-helix";
-    rev = "d2de6d1f2b03bd35869b1427e727f91612485194";
-    hash = "sha256-Zc4v4Ek3gQRNImaLj6sbi9KG3onIl2I24IYZdBSkr40=";
+    rev = "dd27504666b065bfaad87f64d2610a085476fd4f";
+    hash = "sha256-mlZ7A8MSmKrECJKbwv+Cm2DpLI5TmfYe0bCeWPjYfgA=";
   };
 
   meta = {
