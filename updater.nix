@@ -39,7 +39,7 @@ let
   getPackageByPath = path: root: lib.foldl (acc: key: acc.${key}) root (lib.splitString "." path);
 
   isLocalPackage =
-    name: pkg:
+    _name: pkg:
     let
       version =
         if pkg ? version then

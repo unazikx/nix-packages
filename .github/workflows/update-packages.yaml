@@ -1,13 +1,10 @@
 name: Update nix-packages
-
 on:
   schedule:
     - cron: "0 4 * * 1" # every week
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   nix-update:
     name: Run nix updater
@@ -15,24 +12,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install Nix
         uses: cachix/install-nix-action@v27
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             experimental-features = nix-command flakes
-
       - name: Find flake.nix directory
         id: flake-dir
         run: |
           FLAKE_DIR=$(dirname $(find . -name "flake.nix" -not -path "*/node_modules/*" | head -1))
           echo "dir=$FLAKE_DIR" >> $GITHUB_OUTPUT
-
       - name: Run updater
         working-directory: ${{ steps.flake-dir.outputs.dir }}
         run: nix run .#updater
-
       - name: Commit changes
         run: |
           nix fmt

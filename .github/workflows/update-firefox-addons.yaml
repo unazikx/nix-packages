@@ -1,13 +1,10 @@
 name: Update firefox-addons
-
 on:
   schedule:
     - cron: "0 4 * * 1" # every week
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   firefox-addons-update:
     name: Update firefox addons
@@ -15,31 +12,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Install Nix
         uses: cachix/install-nix-action@v27
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             experimental-features = nix-command flakes
-
       - name: Find flake.nix directory
         id: flake-dir
         run: |
           FLAKE_DIR=$(dirname $(find . -name "flake.nix" -not -path "*/node_modules/*" | head -1))
           echo "dir=$FLAKE_DIR" >> $GITHUB_OUTPUT
-
       - name: Build firefox-fetch-addons
         working-directory: ${{ steps.flake-dir.outputs.dir }}
         run: nix build .#firefox-addons-fetcher
-
       - name: Run firefox-fetch-addons
         working-directory: ${{ steps.flake-dir.outputs.dir }}
         run: |
           ./result/bin/firefox-fetch-addons \
             packages/firefox-addons/input.json \
             -o packages/firefox-addons/output.nix
-
       - name: Commit changes
         run: |
           nix fmt
