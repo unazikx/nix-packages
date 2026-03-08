@@ -4,14 +4,14 @@
   lib,
 }:
 
-buildGoModule {
+buildGoModule (_old: {
   pname = "safetwitch-backend";
-  version = "git";
+  version = "1.7.0";
 
   src = fetchFromGitHub {
     owner = "unazikx";
     repo = "safetwitch-backend";
-    rev = "91dda1ceb50822cc9b5306f6c1a92f7e8aaf747b";
+    tag = "v${_old.version}";
     hash = "sha256-kdmM2hf205uVYAb/pK92pXO1WQMCeSoP5uI511XljM0=";
   };
 
@@ -25,4 +25,4 @@ buildGoModule {
     # maintainers = with lib.maintainers; [ unazikx ];
     mainProgram = "safetwitch";
   };
-}
+})

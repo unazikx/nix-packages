@@ -6,7 +6,7 @@
 
 yaziPlugins.mkYaziPlugin {
   pname = "cba-preview";
-  version = "git";
+  version = "0.3.3";
 
   src = fetchFromGitHub {
     owner = "navysky12";

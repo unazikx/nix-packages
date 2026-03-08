@@ -41,6 +41,7 @@
 
         perSystem =
           {
+            self',
             lib,
             config,
             system,
@@ -60,6 +61,13 @@
 
             pkgsDirectory = ./packages;
             pkgsNameSeparator = ".";
+
+            packages = rec {
+              default = updater;
+              updater = pkgs.callPackage ./updater.nix {
+                inherit self';
+              };
+            };
 
             treefmt = {
               programs = {

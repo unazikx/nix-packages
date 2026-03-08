@@ -8,7 +8,7 @@
 
 python312Packages.buildPythonApplication {
   pname = baseNameOf ./.;
-  version = "git";
+  version = "local";
   format = "other";
 
   src = ./script.py;

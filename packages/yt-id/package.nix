@@ -8,7 +8,7 @@
 
 stdenv.mkDerivation {
   pname = baseNameOf ./.;
-  version = "git";
+  version = "local";
 
   src = ./script.sh;
   dontUnpack = true;

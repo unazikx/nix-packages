@@ -5,7 +5,7 @@
 
 python312Packages.buildPythonApplication {
   pname = baseNameOf ./.;
-  version = "git";
+  version = "local";
 
   src = ./script.py;
   dontUnpack = true;

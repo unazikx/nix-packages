@@ -33,6 +33,6 @@ python312Packages.buildPythonPackage (_old: {
       "x86_64-linux"
       "x86_64-darwin"
     ];
-    maintainers = with lib.maintainers; [ azikxz ];
+    # maintainers = with lib.maintainers; [ azikxz ];
   };
 })
