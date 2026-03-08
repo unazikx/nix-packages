@@ -33,7 +33,12 @@ stdenv.mkDerivation {
     platforms = [ "x86_64-linux" ];
     maintainers = with lib.maintainers; [
       avanssion
-      unazikx
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
     ];
     mainProgram = "ytid";
   };

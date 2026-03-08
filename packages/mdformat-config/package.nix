@@ -34,6 +34,13 @@ python312Packages.buildPythonPackage (_old: {
     homepage = "https://github.com/hukkin/mdformat-config";
     changelog = "https://github.com/hukkin/mdformat-config/releases/tag/${_old.src.tag}";
     license = lib.licenses.mit;
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 })

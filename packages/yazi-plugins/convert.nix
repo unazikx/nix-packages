@@ -19,6 +19,13 @@ yaziPlugins.mkYaziPlugin {
     description = "Yazi plugin to convert images";
     homepage = "https://github.com/JohWQ/convert.yazi";
     license = lib.licenses.mit;
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 }

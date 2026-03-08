@@ -33,7 +33,14 @@ rustPlatform.buildRustPackage (_old: {
     homepage = "https://github.com/2bc4/twitch-hls-client";
     license = lib.licenses.gpl3;
     platforms = lib.platforms.all;
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
     mainProgram = "twitch-hls-client";
   };
 })

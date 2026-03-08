@@ -27,7 +27,14 @@ python312Packages.buildPythonApplication {
     homepage = "https://gist.github.com/azikz/1368b57a9dd8c5af1396d6ff94ac5395";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
     mainProgram = "qbt-tui";
   };
 }

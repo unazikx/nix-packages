@@ -32,6 +32,13 @@ python312Packages.buildPythonApplication (_old: {
     description = "Parse anime from RU websites";
     homepage = "https://github.com/vypivshiy/anicli-api";
     license = lib.licenses.mit;
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 })

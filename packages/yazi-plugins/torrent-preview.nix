@@ -19,6 +19,13 @@ yaziPlugins.mkYaziPlugin {
     description = "Yazi plugin to preview bittorrent files";
     homepage = "https://github.com/kirasok/torrent-preview.yazi";
     license = lib.licenses.agpl3Only;
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 }

@@ -19,7 +19,14 @@ stdenv.mkDerivation {
     homepage = "https://github.com/dylanaraps/torque";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
     mainProgram = "torque";
   };
 }

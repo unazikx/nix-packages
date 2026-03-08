@@ -33,6 +33,13 @@ python312Packages.buildPythonPackage (_old: {
       "x86_64-linux"
       "x86_64-darwin"
     ];
-    # maintainers = with lib.maintainers; [ azikxz ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 })

@@ -19,6 +19,13 @@ yaziPlugins.mkYaziPlugin {
     description = "Pipe any shell command as a cached previewer";
     homepage = "https://github.com/alberti42/faster-piper.yazi";
     license = lib.licenses.mit;
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 }

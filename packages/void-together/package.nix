@@ -30,6 +30,13 @@ buildNpmPackage (_old: {
     homepage = "https://github.com/VoidTogether/VoidTogether-Server";
     license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];
-    # maintainers = with lib.maintainers; [ unazikx ];
+    maintainers = with lib.maintainers; [
+      {
+        name = "Aziz Kurbonov";
+        github = "unazikx";
+        githubId = 189107707;
+        email = "xfalwa@gmail.com";
+      }
+    ];
   };
 })
