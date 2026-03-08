@@ -1,8 +1,5 @@
 {
   python312Packages,
-  hdrezka-api,
-  mpv,
-  fzf,
   lib,
 }:
 
@@ -13,12 +10,6 @@ python312Packages.buildPythonApplication (_old: {
 
   src = ./script.py;
   dontUnpack = true;
-
-  propagatedBuildInputs = [
-    hdrezka-api
-    mpv
-    fzf
-  ];
 
   installPhase = ''
     install -Dm775 $src $out/bin/firefox-fetch-addons
