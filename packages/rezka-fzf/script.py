@@ -24,7 +24,6 @@ class Config:
         system = platform.system()
 
         if system == "Windows":
-            # APPDATA may be unset in some environments; fall back to USERPROFILE
             appdata = os.getenv("APPDATA") or os.path.join(
                 os.getenv("USERPROFILE", os.path.expanduser("~")), "AppData", "Roaming"
             )
@@ -34,7 +33,6 @@ class Config:
                 os.path.expanduser("~"), "Library", "Application Support", "rezka-fzf"
             )
         else:
-            # Linux / BSD / etc — respect XDG_CONFIG_HOME if set
             xdg = os.getenv(
                 "XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config")
             )
@@ -66,18 +64,6 @@ class Config:
             print(f"\nConfiguration saved to: {self.config_path}\n")
 
     def load_auth_file(self, path: str):
-        """Load username/password from a plain-text file.
-
-        Accepted formats (one per line, any order):
-            login@example.com
-            MyP@ssw0rd
-
-        Or key=value:
-            username=login@example.com
-            password=MyP@ssw0rd
-
-        Lines starting with # are ignored.
-        """
         path = os.path.expanduser(path)
         if not os.path.exists(path):
             print(f"Auth file not found: {path}")
@@ -97,7 +83,6 @@ class Config:
                 elif key in ("password", "pass", "pwd"):
                     data["password"] = val
             else:
-                # bare values: first = username, second = password
                 if "username" not in data:
                     data["username"] = line
                 elif "password" not in data:
@@ -110,7 +95,6 @@ class Config:
             )
             sys.exit(1)
 
-        # Override cache so setup() picks them up
         cache = self._load_cache()
         cache["username"] = data["username"]
         cache["password"] = data["password"]
@@ -279,7 +263,7 @@ class HdRezkaApp:
             return None
 
         try:
-            search_obj = self.session.search(query)
+            search_obj = self.session.search(query, find_all=True)
             results = []
 
             try:
@@ -367,7 +351,11 @@ class HdRezkaApp:
                 for name, data in self.current_content.translators_names.items():
                     premium = " [PREMIUM]" if data.get("premium", False) else ""
                     translations.append(
-                        {"display": f"{name}{premium}", "value": data["id"]}
+                        {
+                            "display": f"{name}{premium}",
+                            "value": data["id"],
+                            "name": name,
+                        }
                     )
                 return translations
 
@@ -379,7 +367,7 @@ class HdRezkaApp:
                     name = data.get("name", "Unknown")
                     premium = " [PREMIUM]" if data.get("premium", False) else ""
                     translations.append(
-                        {"display": f"{name}{premium}", "value": trans_id}
+                        {"display": f"{name}{premium}", "value": trans_id, "name": name}
                     )
                 return translations
 
@@ -410,6 +398,7 @@ class HdRezkaApp:
                                             {
                                                 "display": f"{name}{premium}",
                                                 "value": trans.get("translator_id"),
+                                                "name": name,
                                             }
                                         )
                                     break
@@ -421,7 +410,9 @@ class HdRezkaApp:
                 for tid, tdata in self.current_content.translators.items():
                     name = tdata.get("name", "Unknown")
                     premium = " [PREMIUM]" if tdata.get("premium", False) else ""
-                    translations.append({"display": f"{name}{premium}", "value": tid})
+                    translations.append(
+                        {"display": f"{name}{premium}", "value": tid, "name": name}
+                    )
 
             return translations
         except Exception as e:
@@ -437,16 +428,23 @@ class HdRezkaApp:
             translations = self.get_movie_translations()
 
         if not translations:
-            return None
+            return None, None
 
         if len(translations) == 1:
-            return translations[0]["value"]
+            t = translations[0]
+            return t["value"], t.get("name", "unknown")
 
         prompt = "Select Translation"
         if season and episode:
             prompt = f"S{season}E{episode} Translation"
 
-        return self.fzf.select(translations, prompt=prompt)
+        selected = self.fzf.select(translations, prompt=prompt)
+        if selected is None:
+            return None, None
+
+        if isinstance(selected, dict):
+            return selected.get("value"), selected.get("name", "unknown")
+        return selected, "unknown"
 
     def _get_stream_object(self, season=None, episode=None, translator_id=None):
         if self.is_series() and season is not None and episode is not None:
@@ -473,13 +471,14 @@ class HdRezkaApp:
             pass
         return []
 
+    def _safe_name(self, s):
+        return s.replace("/", "_").replace("\\", "_").replace(" ", "_")
+
     def show_content_menu(self):
         content = self.current_content
         content_type = "Series" if self.is_series() else "Movie"
 
         menu_items = []
-
-        # ── Actions ──
         menu_items.append({"display": "Watch", "value": "watch"})
 
         if self.is_series():
@@ -499,7 +498,6 @@ class HdRezkaApp:
                 }
             )
 
-        # ── Info ──
         menu_items.append({"display": "━━━ Info ━━━", "value": None})
         menu_items.append({"display": f"Title: {content.name}", "value": None})
         menu_items.append({"display": f"Original: {content.origName}", "value": None})
@@ -679,15 +677,14 @@ class HdRezkaApp:
         ]
 
     def export_all_urls(self):
-        translator_id = self._select_translator()
+        translator_id, translator_name = self._select_translator()
         if translator_id is None and self.get_movie_translations():
-            return  # user cancelled
+            return
 
         all_eps = self._get_all_episodes()
         if not all_eps:
             return
 
-        # Detect qualities silently via first episode
         try:
             test_stream = self._get_stream_object(
                 all_eps[0][0], all_eps[0][1], translator_id
@@ -707,7 +704,6 @@ class HdRezkaApp:
         if not quality:
             return
 
-        # Collect all URLs silently
         title = self.current_content.name
         results = {}
         for s, e in all_eps:
@@ -720,11 +716,13 @@ class HdRezkaApp:
                 urls = [f"ERROR: {ex}"]
             results.setdefault(s, []).append((e, urls))
 
-        # Save directly to file — no terminal output, no prompt
-        safe_title = title.replace("/", "_").replace("\\", "_")
-        filename = f"{safe_title}_{quality.replace(' ', '_')}_urls.txt"
+        safe_title = self._safe_name(title)
+        safe_quality = self._safe_name(quality)
+        safe_translator = self._safe_name(translator_name or "unknown")
+        filename = f"{safe_title}_{safe_quality}_{safe_translator}_urls.txt"
+
         with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"{title} — {quality}\n")
+            f.write(f"{title} — {quality} — {translator_name}\n")
             f.write("=" * 60 + "\n\n")
             for sn in sorted(results.keys()):
                 f.write(f"Season {sn}\n")
@@ -741,11 +739,10 @@ class HdRezkaApp:
         )
 
     def export_movie_urls(self):
-        translator_id = self._select_translator()
+        translator_id, translator_name = self._select_translator()
         if translator_id is None and self.get_movie_translations():
-            return  # user cancelled
+            return
 
-        # Get stream
         try:
             stream = self._get_stream_object(translator_id=translator_id)
             qualities = self._get_available_qualities(stream)
@@ -763,10 +760,11 @@ class HdRezkaApp:
         if not quality:
             return
 
-        # Get URLs for all qualities or just selected
         title = self.current_content.name
-        safe_title = title.replace("/", "_").replace("\\", "_")
-        filename = f"{safe_title}_{quality.replace(' ', '_')}_urls.txt"
+        safe_title = self._safe_name(title)
+        safe_quality = self._safe_name(quality)
+        safe_translator = self._safe_name(translator_name or "unknown")
+        filename = f"{safe_title}_{safe_quality}_{safe_translator}_urls.txt"
 
         try:
             urls = stream.videos.get(quality, [])
@@ -777,7 +775,7 @@ class HdRezkaApp:
             return
 
         with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"{title} — {quality}\n")
+            f.write(f"{title} — {quality} — {translator_name}\n")
             f.write("=" * 60 + "\n\n")
             for i, url in enumerate(urls, 1):
                 prefix = f"[{i}] " if len(urls) > 1 else ""
@@ -796,7 +794,7 @@ class HdRezkaApp:
             stream = None
             for attempt in range(3):
                 try:
-                    translator_id = self._select_translator(season, episode)
+                    translator_id, _ = self._select_translator(season, episode)
                     if translator_id is None:
                         translations = (
                             self.get_series_translations(season, episode)
@@ -804,7 +802,7 @@ class HdRezkaApp:
                             else self.get_movie_translations()
                         )
                         if translations:
-                            return  # user cancelled fzf
+                            return
 
                     stream = self._get_stream_object(season, episode, translator_id)
                     break
