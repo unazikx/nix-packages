@@ -47,8 +47,6 @@
         perSystem =
           {
             self',
-            lib,
-            config,
             system,
             ...
           }:
@@ -78,8 +76,6 @@
               programs = {
                 beautysh.enable = true;
                 black.enable = true;
-                toml-sort.enable = true;
-                yamlfmt.enable = true;
 
                 deadnix = {
                   enable = true;
@@ -91,21 +87,21 @@
                   excludes = [ "packages/firefox-addons/output.nix" ];
                 };
 
-                mdformat = {
-                  enable = true;
-                  plugins =
-                    _ps:
-                    lib.attrValues {
-                      inherit (pkgs.python312Packages)
-                        mdformat-beautysh
-                        ;
+                # mdformat = {
+                #   enable = true;
+                #   plugins =
+                #     _ps:
+                #     lib.attrValues {
+                #       inherit (pkgs.python312Packages)
+                #         mdformat-beautysh
+                #         ;
 
-                      inherit (config.packages)
-                        mdformat-black
-                        mdformat-config
-                        ;
-                    };
-                };
+                #       inherit (config.packages)
+                #         mdformat-black
+                #         mdformat-config
+                #         ;
+                #     };
+                # };
 
                 formatjson5 = {
                   enable = true;
