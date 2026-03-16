@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "emmanuelrosa-nix": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1773329013,
+        "narHash": "sha256-IIt2lOJK3a+n2r/QUS/YU1UciEhXRahmGIzb1gEg6O8=",
+        "owner": "emmanuelrosa",
+        "repo": "erosanix",
+        "rev": "5517e75710e9ccfd096b50dc8d4ed0b96fc9b21f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emmanuelrosa",
+        "repo": "erosanix",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673956053,
+        "narHash": "sha256-4gtG9iQuiKITOjNQQeQIpoIB6b16fm+504Ch3sNKLd8=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "35bb57c0c8d8b62bbfd284272c928ceb64ddbde9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -76,6 +113,7 @@
     },
     "root": {
       "inputs": {
+        "emmanuelrosa-nix": "emmanuelrosa-nix",
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
