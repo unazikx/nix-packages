@@ -6,7 +6,7 @@
 
 python312Packages.buildPythonPackage (_old: {
   pname = baseNameOf ./.;
-  version = "11.2.0";
+  version = "11.2.1";
   pyproject = true;
 
   src = fetchPypi {
@@ -14,7 +14,7 @@ python312Packages.buildPythonPackage (_old: {
     inherit (_old)
       version
       ;
-    hash = "sha256-AcBjDTyEAGAJ/ffqyKrUH21Z5cb/xiyA26aIrbAZhBk=";
+    hash = "sha256-XG7DBURgCpOoKz/3Rah0XVghVLFk9BpXiEe10ZZAIqY=";
   };
 
   dependencies = [
