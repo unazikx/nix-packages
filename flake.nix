@@ -56,6 +56,14 @@
               config.allowUnfree = true;
               overlays = [
                 inputs.nur.overlays.default
+                (_f: _p: {
+                  inherit (inputs.emmanuelrosa-nix.lib.${system})
+                    mkWindowsApp
+                    mkWindowsAppNoCC
+                    copyDesktopIcons
+                    makeDesktopIcon
+                    ;
+                })
               ];
             };
           in
