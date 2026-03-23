@@ -10,7 +10,7 @@
   (
     _final: _: {
       pname = "proton-gdk";
-      version = "10-32";
+      version = "release10-32";
 
       src = fetchzip {
         url = "https://github.com/Weather-OS/GDK-Proton/releases/download/release${_final.version}/GDK-Proton${_final.version}.tar.gz";

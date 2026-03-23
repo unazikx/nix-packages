@@ -10,7 +10,7 @@
   (
     _final: _: {
       pname = "proton-umu";
-      version = "9.0-4e";
+      version = "UMU-Proton-9.0-4e";
 
       src = fetchzip {
         url = "https://github.com/Open-Wine-Components/umu-proton/releases/download/UMU-Proton-${_final.version}/UMU-Proton-${_final.version}.tar.gz";
