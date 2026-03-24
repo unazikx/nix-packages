@@ -3,6 +3,7 @@
   pkgs,
   lib,
 }:
+
 let
   excludePackages = [
     (baseNameOf ./.)
@@ -88,11 +89,14 @@ let
     exit $exit_code
   '';
 in
+
 pkgs.writeShellScriptBin "update-packages" ''
   echo "Starting package updates..."
   echo ""
+
   COMMANDS=()
   PACKAGE_NAMES=()
+
   for name in ${toString packagesToUpdate}; do
     nix_update_cmd="${lib.getExe quietNixUpdate}"
     cmd="cd $PWD && $nix_update_cmd --flake legacyPackages.${pkgs.stdenv.system}.$name"
@@ -100,6 +104,7 @@ pkgs.writeShellScriptBin "update-packages" ''
     COMMANDS+=("$cmd")
     PACKAGE_NAMES+=("$name")
   done
+
   total=''${#COMMANDS[@]}
   current=0
   success=0
@@ -108,6 +113,7 @@ pkgs.writeShellScriptBin "update-packages" ''
   excluded_count=${toString (builtins.length excludePackages)}
   local_count=${toString localPackagesCount}
   no_version_count=$(($all_total - $excluded_count - $local_count - $total))
+
   echo "=== Package Statistics ==="
   echo "Total packages: $all_total"
   echo "Excluded by list: $excluded_count"
@@ -115,16 +121,19 @@ pkgs.writeShellScriptBin "update-packages" ''
   echo "Packages without 'version' attr: $no_version_count"
   echo "Packages to update: $total"
   echo ""
+
   if [[ $total -eq 0 ]]; then
     echo "No packages to update!"
     exit 0
   fi
+
   for i in "''${!COMMANDS[@]}"; do
     cmd="''${COMMANDS[$i]}"
     name="''${PACKAGE_NAMES[$i]}"
     current=$((current + 1))
     
     echo -n "[$current/$total] Updating $name..."
+    
     if eval "$cmd"; then
       echo " Success"
       success=$((success + 1))
@@ -133,6 +142,7 @@ pkgs.writeShellScriptBin "update-packages" ''
       failed=$((failed + 1))
     fi
   done
+
   echo ""
   echo "=== Update Summary ==="
   echo "Successful: $success"
