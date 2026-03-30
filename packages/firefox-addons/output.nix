@@ -46,10 +46,10 @@
   };
   "youtube-addon" = buildFirefoxXpiAddon {
     pname = "youtube-addon";
-    version = "4.2000";
+    version = "4.2026";
     addonId = "{3c6bf0cc-3ae2-42fb-9993-0d33104fdcaf}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4690208/youtube_addon-4.2000.xpi";
-    sha256 = "a6472ec9fc01815930856ec985778c43877da4693de30c15ba8fc5c116208f9a";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4723468/youtube_addon-4.2026.xpi";
+    sha256 = "fdd964bb8b157e1cc7983ea1b5ca4dab4fe56690098eb23ba0c4726381766535";
     meta = with lib; {
       homepage = "https://github.com/code4charity/YouTube-Extension/";
       description = "Youtube Extension. Powerful but lightweight. Enrich your Youtube and content selection. Make YouTube tidy and smart! (Layout, Filters, Shortcuts, Playlist)";
@@ -57,6 +57,7 @@
       mozPermissions = [
           "contextMenus"
           "storage"
+          "unlimitedStorage"
           "https://www.youtube.com/*"
         ];
       platforms = platforms.all;
@@ -132,10 +133,10 @@
   };
   "bitwarden-password-manager" = buildFirefoxXpiAddon {
     pname = "bitwarden-password-manager";
-    version = "2026.1.1";
+    version = "2026.2.0";
     addonId = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4698131/bitwarden_password_manager-2026.1.1.xpi";
-    sha256 = "6143af5d61d95021fcdd6939ab8c18f9535f775c80d4b69f75d1d238f81ae347";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4715321/bitwarden_password_manager-2026.2.0.xpi";
+    sha256 = "e54999d45ae1cd001452a34294240633c89a95ae832f212721d746a89555958e";
     meta = with lib; {
       homepage = "https://bitwarden.com";
       description = "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.";
