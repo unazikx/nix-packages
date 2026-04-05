@@ -6,6 +6,9 @@ import subprocess
 import sys
 import signal
 import platform
+import asyncio
+import aiohttp
+from concurrent.futures import ThreadPoolExecutor
 from HdRezkaApi import HdRezkaSession
 
 """
@@ -124,7 +127,7 @@ class FzfSelector:
         except:
             return False
 
-    def select(self, items, prompt="Select", multi=False):
+    async def select(self, items, prompt="Select", multi=False):
         if not self.available or not items:
             return None
 
@@ -154,31 +157,39 @@ class FzfSelector:
             fzf_cmd.append("--multi")
 
         try:
-            process = subprocess.Popen(
-                fzf_cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                env={**os.environ, "TERM": "xterm-256color"},
-            )
-
-            input_text = "\n".join(display_items)
-            stdout, _ = process.communicate(input=input_text)
-
-            if process.returncode != 0:
-                return None
-
-            selected_displays = stdout.strip().split("\n")
-
-            if multi:
-                return [value_map[d] for d in selected_displays if d in value_map]
-            else:
-                return (
-                    value_map.get(selected_displays[0])
-                    if selected_displays[0]
-                    else None
+            # Run fzf in a thread pool to avoid blocking the event loop
+            loop = asyncio.get_event_loop()
+            with ThreadPoolExecutor() as executor:
+                process = await loop.run_in_executor(
+                    executor,
+                    lambda: subprocess.Popen(
+                        fzf_cmd,
+                        stdin=subprocess.PIPE,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        env={**os.environ, "TERM": "xterm-256color"},
+                    ),
                 )
+
+                input_text = "\n".join(display_items)
+                stdout, _ = await loop.run_in_executor(
+                    executor, process.communicate, input_text
+                )
+
+                if process.returncode != 0:
+                    return None
+
+                selected_displays = stdout.strip().split("\n")
+
+                if multi:
+                    return [value_map[d] for d in selected_displays if d in value_map]
+                else:
+                    return (
+                        value_map.get(selected_displays[0])
+                        if selected_displays[0]
+                        else None
+                    )
 
         except Exception:
             return None
@@ -233,37 +244,50 @@ class HdRezkaApp:
         self.current_content = None
         self.fzf = FzfSelector()
         self.player = Player(self.config.load("player"))
+        self.executor = ThreadPoolExecutor(max_workers=4)
 
-    def setup(self):
+    async def setup(self):
         url = self.config.load("url", "https://hdrezka.ag")
         username = self.config.load("username", "")
         password = self.config.load("password", "")
 
         try:
-            self.session = HdRezkaSession(url)
+            # Run synchronous HdRezkaSession setup in thread pool
+            loop = asyncio.get_event_loop()
+            self.session = await loop.run_in_executor(
+                self.executor, lambda: HdRezkaSession(url)
+            )
             if username and password:
-                self.session.login(username, password)
+                await loop.run_in_executor(
+                    self.executor, lambda: self.session.login(username, password)
+                )
             return True
         except Exception as e:
             print(f"Connection error: {e}")
             return False
 
-    def get_search_query(self):
+    async def get_search_query(self):
         try:
             print("Search: ", end="", flush=True)
-            query = input().strip()
-            return query
+            # Use asyncio to read input without blocking
+            loop = asyncio.get_event_loop()
+            query = await loop.run_in_executor(self.executor, sys.stdin.readline)
+            return query.strip()
         except (KeyboardInterrupt, EOFError):
             print("\nGoodbye!")
             sys.exit(0)
 
-    def search_and_select(self):
-        query = self.get_search_query()
+    async def search_and_select(self):
+        query = await self.get_search_query()
         if not query:
             return None
 
         try:
-            search_obj = self.session.search(query, find_all=True)
+            # Run search in thread pool
+            loop = asyncio.get_event_loop()
+            search_obj = await loop.run_in_executor(
+                self.executor, lambda: self.session.search(query, find_all=True)
+            )
             results = []
 
             try:
@@ -296,25 +320,32 @@ class HdRezkaApp:
                 display = f"{title}" + (f" [{', '.join(extras)}]" if extras else "")
                 result_items.append({"display": display, "value": item})
 
-            return self.fzf.select(result_items, prompt="Select Content")
+            return await self.fzf.select(result_items, prompt="Select Content")
 
         except Exception as e:
             print(f"Search error: {e}")
             return None
 
-    def load_content(self, item):
+    async def load_content(self, item):
         try:
-            self.current_content = self.session.get(item["url"].split("/")[-1])
+            loop = asyncio.get_event_loop()
+            self.current_content = await loop.run_in_executor(
+                self.executor, lambda: self.session.get(item["url"].split("/")[-1])
+            )
             return True
         except Exception as e:
             print(f"Error loading content: {e}")
             return False
 
-    def is_series(self):
+    async def is_series(self):
         try:
             if hasattr(self.current_content, "seriesInfo"):
                 try:
-                    series_info = self.current_content.seriesInfo
+                    # Run in thread pool to avoid blocking
+                    loop = asyncio.get_event_loop()
+                    series_info = await loop.run_in_executor(
+                        self.executor, lambda: self.current_content.seriesInfo
+                    )
                     if series_info is not None:
                         return True
                 except Exception:
@@ -322,7 +353,9 @@ class HdRezkaApp:
 
             if hasattr(self.current_content, "episodesInfo"):
                 try:
-                    episodes = self.current_content.episodesInfo
+                    episodes = await loop.run_in_executor(
+                        self.executor, lambda: self.current_content.episodesInfo
+                    )
                     if episodes and len(episodes) > 0:
                         return True
                 except Exception:
@@ -340,7 +373,7 @@ class HdRezkaApp:
         except Exception:
             return False
 
-    def get_movie_translations(self):
+    async def get_movie_translations(self):
         translations = []
 
         try:
@@ -376,7 +409,7 @@ class HdRezkaApp:
             print(f"Error getting translations: {e}")
             return translations
 
-    def get_series_translations(self, season_num, episode_num):
+    async def get_series_translations(self, season_num, episode_num):
         translations = []
 
         try:
@@ -419,13 +452,13 @@ class HdRezkaApp:
             print(f"Error getting series translations: {e}")
             return translations
 
-    def _select_translator(self, season=None, episode=None):
-        is_series_content = self.is_series()
+    async def _select_translator(self, season=None, episode=None):
+        is_series_content = await self.is_series()
 
         if is_series_content and season is not None and episode is not None:
-            translations = self.get_series_translations(season, episode)
+            translations = await self.get_series_translations(season, episode)
         else:
-            translations = self.get_movie_translations()
+            translations = await self.get_movie_translations()
 
         if not translations:
             return None, None
@@ -438,7 +471,7 @@ class HdRezkaApp:
         if season and episode:
             prompt = f"S{season}E{episode} Translation"
 
-        selected = self.fzf.select(translations, prompt=prompt)
+        selected = await self.fzf.select(translations, prompt=prompt)
         if selected is None:
             return None, None
 
@@ -446,18 +479,27 @@ class HdRezkaApp:
             return selected.get("value"), selected.get("name", "unknown")
         return selected, "unknown"
 
-    def _get_stream_object(self, season=None, episode=None, translator_id=None):
-        if self.is_series() and season is not None and episode is not None:
-            return self.current_content.getStream(
-                season=season,
-                episode=str(episode),
-                translation=translator_id,
+    async def _get_stream_object(self, season=None, episode=None, translator_id=None):
+        loop = asyncio.get_event_loop()
+        if await self.is_series() and season is not None and episode is not None:
+            return await loop.run_in_executor(
+                self.executor,
+                lambda: self.current_content.getStream(
+                    season=season,
+                    episode=str(episode),
+                    translation=translator_id,
+                ),
             )
         if translator_id:
-            return self.current_content.getStream(translation=translator_id)
-        return self.current_content.getStream()
+            return await loop.run_in_executor(
+                self.executor,
+                lambda: self.current_content.getStream(translation=translator_id),
+            )
+        return await loop.run_in_executor(
+            self.executor, lambda: self.current_content.getStream()
+        )
 
-    def _get_available_qualities(self, stream):
+    async def _get_available_qualities(self, stream):
         try:
             videos = stream.videos
             if isinstance(videos, dict) and videos:
@@ -474,14 +516,14 @@ class HdRezkaApp:
     def _safe_name(self, s):
         return s.replace("/", "_").replace("\\", "_").replace(" ", "_")
 
-    def show_content_menu(self):
+    async def show_content_menu(self):
         content = self.current_content
-        content_type = "Series" if self.is_series() else "Movie"
+        content_type = "Series" if await self.is_series() else "Movie"
 
         menu_items = []
         menu_items.append({"display": "Watch", "value": "watch"})
 
-        if self.is_series():
+        if await self.is_series():
             menu_items.append(
                 {"display": "Export all episode URLs to file", "value": "export_urls"}
             )
@@ -518,9 +560,9 @@ class HdRezkaApp:
             ]
         )
 
-        return self.fzf.select(menu_items, prompt=f"{content_type} Menu")
+        return await self.fzf.select(menu_items, prompt=f"{content_type} Menu")
 
-    def handle_other_parts(self):
+    async def handle_other_parts(self):
         parts = self.current_content.otherParts
         if not parts:
             return False
@@ -530,17 +572,20 @@ class HdRezkaApp:
             for name, url in part.items():
                 parts_items.append({"display": name, "value": url})
 
-        selected_url = self.fzf.select(parts_items, prompt="Select Part")
+        selected_url = await self.fzf.select(parts_items, prompt="Select Part")
 
         if selected_url:
             try:
-                self.current_content = self.session.get(selected_url.split("/")[-1])
+                loop = asyncio.get_event_loop()
+                self.current_content = await loop.run_in_executor(
+                    self.executor, lambda: self.session.get(selected_url.split("/")[-1])
+                )
                 return True
             except:
                 return False
         return False
 
-    def select_episode(self):
+    async def select_episode(self):
         try:
             episodes_info = None
 
@@ -599,7 +644,7 @@ class HdRezkaApp:
                     print("No seasons available")
                     return None, None
 
-                season = self.fzf.select(season_items, prompt="Season")
+                season = await self.fzf.select(season_items, prompt="Season")
                 if not season:
                     return None, None
 
@@ -623,7 +668,9 @@ class HdRezkaApp:
                 print("No episodes available")
                 return None, None
 
-            episode = self.fzf.select(episode_items, prompt=f"S{season_num} Episode")
+            episode = await self.fzf.select(
+                episode_items, prompt=f"S{season_num} Episode"
+            )
             if not episode:
                 return None, None
 
@@ -635,7 +682,7 @@ class HdRezkaApp:
             print(f"Error selecting episode: {e}")
             return None, None
 
-    def _get_all_episodes(self):
+    async def _get_all_episodes(self):
         episodes_info = None
         try:
             if hasattr(self.current_content, "episodesInfo"):
@@ -676,20 +723,20 @@ class HdRezkaApp:
             if s.get("season") is not None and e.get("episode") is not None
         ]
 
-    def export_all_urls(self):
-        translator_id, translator_name = self._select_translator()
-        if translator_id is None and self.get_movie_translations():
+    async def export_all_urls(self):
+        translator_id, translator_name = await self._select_translator()
+        if translator_id is None and await self.get_movie_translations():
             return
 
-        all_eps = self._get_all_episodes()
+        all_eps = await self._get_all_episodes()
         if not all_eps:
             return
 
         try:
-            test_stream = self._get_stream_object(
+            test_stream = await self._get_stream_object(
                 all_eps[0][0], all_eps[0][1], translator_id
             )
-            qualities = self._get_available_qualities(test_stream)
+            qualities = await self._get_available_qualities(test_stream)
         except Exception as ex:
             print(f"Error: {ex}")
             return
@@ -697,7 +744,7 @@ class HdRezkaApp:
         if not qualities:
             return
 
-        quality = self.fzf.select(
+        quality = await self.fzf.select(
             [{"display": q, "value": q} for q in qualities],
             prompt="Quality for export",
         )
@@ -708,7 +755,7 @@ class HdRezkaApp:
         results = {}
         for s, e in all_eps:
             try:
-                stream = self._get_stream_object(s, e, translator_id)
+                stream = await self._get_stream_object(s, e, translator_id)
                 urls = stream.videos.get(quality, [])
                 if not isinstance(urls, list):
                     urls = [urls]
@@ -738,14 +785,14 @@ class HdRezkaApp:
             f"\033[32m✓\033[0m {len(all_eps)} episodes ({quality}) → \033[1m{filename}\033[0m"
         )
 
-    def export_movie_urls(self):
-        translator_id, translator_name = self._select_translator()
-        if translator_id is None and self.get_movie_translations():
+    async def export_movie_urls(self):
+        translator_id, translator_name = await self._select_translator()
+        if translator_id is None and await self.get_movie_translations():
             return
 
         try:
-            stream = self._get_stream_object(translator_id=translator_id)
-            qualities = self._get_available_qualities(stream)
+            stream = await self._get_stream_object(translator_id=translator_id)
+            qualities = await self._get_available_qualities(stream)
         except Exception as ex:
             print(f"Error: {ex}")
             return
@@ -753,7 +800,7 @@ class HdRezkaApp:
         if not qualities:
             return
 
-        quality = self.fzf.select(
+        quality = await self.fzf.select(
             [{"display": q, "value": q} for q in qualities],
             prompt="Quality for export",
         )
@@ -783,28 +830,30 @@ class HdRezkaApp:
 
         print(f"\033[32m✓\033[0m {title} ({quality}) → \033[1m{filename}\033[0m")
 
-    def play_content(self, season=None, episode=None):
+    async def play_content(self, season=None, episode=None):
         try:
             is_series_content = False
             try:
-                is_series_content = self.is_series()
+                is_series_content = await self.is_series()
             except Exception:
                 is_series_content = season is not None and episode is not None
 
             stream = None
             for attempt in range(3):
                 try:
-                    translator_id, _ = self._select_translator(season, episode)
+                    translator_id, _ = await self._select_translator(season, episode)
                     if translator_id is None:
                         translations = (
-                            self.get_series_translations(season, episode)
+                            await self.get_series_translations(season, episode)
                             if is_series_content
-                            else self.get_movie_translations()
+                            else await self.get_movie_translations()
                         )
                         if translations:
                             return
 
-                    stream = self._get_stream_object(season, episode, translator_id)
+                    stream = await self._get_stream_object(
+                        season, episode, translator_id
+                    )
                     break
 
                 except UnicodeDecodeError:
@@ -820,13 +869,13 @@ class HdRezkaApp:
             if stream is None:
                 return
 
-            available = self._get_available_qualities(stream)
+            available = await self._get_available_qualities(stream)
             if not available:
                 print("No qualities available")
                 return
 
             quality_items = [{"display": q, "value": q} for q in available]
-            quality = self.fzf.select(quality_items, prompt="Quality")
+            quality = await self.fzf.select(quality_items, prompt="Quality")
             if not quality:
                 return
 
@@ -853,7 +902,7 @@ class HdRezkaApp:
                 url = urls[0]
             else:
                 url_items = [{"display": str(u)[:132], "value": u} for u in urls]
-                url = self.fzf.select(url_items, prompt="Select Mirror")
+                url = await self.fzf.select(url_items, prompt="Select Mirror")
 
             if url:
                 title = self.current_content.name
@@ -864,8 +913,8 @@ class HdRezkaApp:
         except Exception as e:
             print(f"Playback error: {e}")
 
-    def run(self):
-        if not self.setup():
+    async def run(self):
+        if not await self.setup():
             return
 
         if not self.fzf.available:
@@ -880,44 +929,45 @@ class HdRezkaApp:
 
         while True:
             try:
-                item = self.search_and_select()
+                item = await self.search_and_select()
                 if not item:
                     continue
 
-                if not self.load_content(item):
+                if not await self.load_content(item):
                     continue
 
                 while True:
-                    action = self.show_content_menu()
+                    action = await self.show_content_menu()
 
                     if not action or action is None:
                         break
 
                     if action == "other_parts":
-                        self.handle_other_parts()
+                        await self.handle_other_parts()
                         continue
 
                     if action == "export_urls":
-                        self.export_all_urls()
+                        await self.export_all_urls()
                         continue
 
                     if action == "export_movie_urls":
-                        self.export_movie_urls()
+                        await self.export_movie_urls()
                         continue
 
                     if action == "watch":
-                        if self.is_series():
-                            season, episode = self.select_episode()
+                        if await self.is_series():
+                            season, episode = await self.select_episode()
                             if season and episode:
-                                self.play_content(season, episode)
+                                await self.play_content(season, episode)
                         else:
-                            self.play_content()
+                            await self.play_content()
 
             except KeyboardInterrupt:
                 break
             except Exception as e:
                 print(f"Error: {e}")
                 continue
+        self.executor.shutdown(wait=True)
 
 
 def main():
@@ -937,7 +987,7 @@ def main():
     args = parser.parse_args()
 
     app = HdRezkaApp(auth_file=args.authFile)
-    app.run()
+    asyncio.run(app.run())
 
 
 if __name__ == "__main__":

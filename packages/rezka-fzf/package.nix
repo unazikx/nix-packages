@@ -20,6 +20,10 @@ python312Packages.buildPythonApplication {
     fzf
   ];
 
+  dependencies = [
+    python312Packages.aiohttp
+  ];
+
   installPhase = ''
     install -Dm775 $src $out/bin/rezka-fzf
   '';
