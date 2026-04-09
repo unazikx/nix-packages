@@ -36,7 +36,7 @@ class Config:
             "XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config")
         )
         self.config_dir = os.path.join(xdg, "rezka-fzf")
-        self.config_path = os.path.join(self.config_dir, "config.json")
+        self.config_path = os.path.join(self.config_dir, "config.yaml")
         self.favorites_path = os.path.join(self.config_dir, "favorites.yaml")
         self._cache = None
         self.setup_config()
@@ -58,7 +58,7 @@ class Config:
 
             os.makedirs(self.config_dir, exist_ok=True)
             with open(self.config_path, "w") as f:
-                json.dump(config_data, f, indent=4)
+                yaml.dump(config_data, f, allow_unicode=True, default_flow_style=False, indent=2)
 
             print(f"\nConfiguration saved to: {self.config_path}\n")
 
@@ -103,8 +103,8 @@ class Config:
         if self._cache is None:
             try:
                 with open(self.config_path) as f:
-                    self._cache = json.load(f)
-            except (FileNotFoundError, json.JSONDecodeError):
+                    self._cache = yaml.safe_load(f) or {}
+            except (FileNotFoundError, yaml.YAMLError):
                 self._cache = {}
         return self._cache
 
