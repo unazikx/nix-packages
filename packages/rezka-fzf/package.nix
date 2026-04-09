@@ -22,6 +22,7 @@ python312Packages.buildPythonApplication {
 
   dependencies = [
     python312Packages.aiohttp
+    python312Packages.pyyaml
   ];
 
   installPhase = ''

@@ -1,13 +1,16 @@
 #! /usr/bin/env python3
 
-import os
+import aiohttp
+import asyncio
 import json
+import os
+import signal
 import subprocess
 import sys
-import signal
-import platform
-import asyncio
-import aiohttp
+import yaml
+import re
+
+from yaml.representer import SafeRepresenter
 from concurrent.futures import ThreadPoolExecutor
 from HdRezkaApi import HdRezkaSession
 
@@ -19,29 +22,22 @@ Features:
     - Watch movies and series with various video players
     - Clean terminal interface built on fzf
     - Export all episode URLs for any quality
+    - Favorites list with watched episode tracking
 """
 
+def _represent_list(self, data):
+    return self.represent_sequence('tag:yaml.org,2002:seq', data, flow_style=True)
+
+SafeRepresenter.add_representer(list, _represent_list)
 
 class Config:
     def __init__(self):
-        system = platform.system()
-
-        if system == "Windows":
-            appdata = os.getenv("APPDATA") or os.path.join(
-                os.getenv("USERPROFILE", os.path.expanduser("~")), "AppData", "Roaming"
-            )
-            self.config_dir = os.path.join(appdata, "rezka-fzf")
-        elif system == "Darwin":
-            self.config_dir = os.path.join(
-                os.path.expanduser("~"), "Library", "Application Support", "rezka-fzf"
-            )
-        else:
-            xdg = os.getenv(
-                "XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config")
-            )
-            self.config_dir = os.path.join(xdg, "rezka-fzf")
-
+        xdg = os.getenv(
+            "XDG_CONFIG_HOME", os.path.join(os.path.expanduser("~"), ".config")
+        )
+        self.config_dir = os.path.join(xdg, "rezka-fzf")
         self.config_path = os.path.join(self.config_dir, "config.json")
+        self.favorites_path = os.path.join(self.config_dir, "favorites.yaml")
         self._cache = None
         self.setup_config()
 
@@ -61,7 +57,7 @@ class Config:
             }
 
             os.makedirs(self.config_dir, exist_ok=True)
-            with open(self.config_path, "w", encoding="utf-8") as f:
+            with open(self.config_path, "w") as f:
                 json.dump(config_data, f, indent=4)
 
             print(f"\nConfiguration saved to: {self.config_path}\n")
@@ -72,7 +68,7 @@ class Config:
             print(f"Auth file not found: {path}")
             sys.exit(1)
 
-        with open(path, encoding="utf-8") as f:
+        with open(path) as f:
             lines = [l.strip() for l in f if l.strip() and not l.startswith("#")]
 
         data = {}
@@ -93,8 +89,8 @@ class Config:
 
         if "username" not in data or "password" not in data:
             print(
-                f"Auth file must contain username and password.\n"
-                f"Expected format:\n  username=...\n  password=...\nor two plain lines."
+                "Auth file must contain username and password.\n"
+                "Expected format:\n  username=...\n  password=...\nor two plain lines."
             )
             sys.exit(1)
 
@@ -106,7 +102,7 @@ class Config:
     def _load_cache(self):
         if self._cache is None:
             try:
-                with open(self.config_path, encoding="utf-8") as f:
+                with open(self.config_path) as f:
                     self._cache = json.load(f)
             except (FileNotFoundError, json.JSONDecodeError):
                 self._cache = {}
@@ -114,6 +110,92 @@ class Config:
 
     def load(self, key, default=None):
         return self._load_cache().get(key, default)
+
+    def load_favorites(self) -> list:
+        if not os.path.exists(self.favorites_path):
+            return []
+        with open(self.favorites_path) as f:
+            data = yaml.safe_load(f) or []
+        return data if isinstance(data, list) else []
+
+    def save_favorites(self, favs: list):
+        os.makedirs(self.config_dir, exist_ok=True)
+        with open(self.favorites_path, "w") as f:
+            yaml.dump(favs, f, allow_unicode=True, default_flow_style=None)
+
+    def find_favorite(self, item_id: int) -> dict | None:
+        for fav in self.load_favorites():
+            if fav.get("id") == item_id:
+                return fav
+        return None
+
+    def add_favorite(self, item_id: int, content_type: str = None, url_short: str = None):
+        favs = self.load_favorites()
+        for fav in favs:
+            if fav.get("id") == item_id:
+                return    
+
+        mirror = self.get_mirror()
+        fav_item = {
+            "id": item_id,
+            "type": content_type,
+            "url": f"{mirror}/{url_short}" if url_short else None,
+            "url-short": url_short
+        }
+        fav_item = {k: v for k, v in fav_item.items() if v is not None}
+    
+        favs.append(fav_item)
+        self.save_favorites(favs)
+
+    def remove_favorite(self, item_id: int):
+        favs = [f for f in self.load_favorites() if f.get("id") != item_id]
+        self.save_favorites(favs)
+
+    def mark_watched(self, item_id: int, season: int, episode: int):
+        favs = self.load_favorites()
+        for fav in favs:
+            if fav.get("id") == item_id:
+                watched = fav.get("watched", {})
+                if not isinstance(watched, dict):
+                    watched = {}
+                season_key = f"s{season}"
+                eps = watched.get(season_key, [])
+                if episode not in eps:
+                    eps = sorted(set(eps) | {episode})
+                watched[season_key] = eps
+                fav["watched"] = watched
+                self.save_favorites(favs)
+                return
+
+    def get_watched(self, item_id: int) -> dict:
+        fav = self.find_favorite(item_id)
+        if fav:
+            return fav.get("watched", {})
+        return {}
+
+    def update_favorites_mirror(self):
+        """Update all favorites URLs when mirror changes"""
+        favs = self.load_favorites()
+        if not favs:
+            return
+
+        mirror = self.get_mirror()
+        changed = False
+
+        for fav in favs:
+            url_short = fav.get("url-short")
+            if url_short:
+                new_url = f"{mirror}/{url_short}"
+                if fav.get("url") != new_url:
+                    fav["url"] = new_url
+                    changed = True
+
+        if changed:
+            self.save_favorites(favs)
+
+    def get_mirror(self) -> str:
+        """Get current mirror URL from config"""
+        return self.load("url", "https://hdrezka.ag").rstrip("/")
 
 
 class FzfSelector:
@@ -124,7 +206,7 @@ class FzfSelector:
         try:
             result = subprocess.run(["which", "fzf"], capture_output=True, timeout=1)
             return result.returncode == 0
-        except:
+        except Exception:
             return False
 
     async def select(self, items, prompt="Select", multi=False):
@@ -151,13 +233,13 @@ class FzfSelector:
             "--prompt=" + prompt + " > ",
             "--pointer=>",
             "--ansi",
+            "--bind=esc:abort",
         ]
 
         if multi:
             fzf_cmd.append("--multi")
 
         try:
-            # Run fzf in a thread pool to avoid blocking the event loop
             loop = asyncio.get_event_loop()
             with ThreadPoolExecutor() as executor:
                 process = await loop.run_in_executor(
@@ -200,20 +282,19 @@ class Player:
         self.available_players = {
             "mpv": ["mpv", "--title={title}", "{url}"],
             "vlc": ["vlc", "{url}"],
-            "iina": ["iina", "{url}"],
             "celluloid": ["celluloid", "{url}"],
         }
         self.player_name = player_name or self._detect_player()
 
     def _detect_player(self):
-        for player in ["mpv", "vlc", "iina", "celluloid"]:
+        for player in ["mpv", "vlc", "celluloid"]:
             try:
                 result = subprocess.run(
                     ["which", player], capture_output=True, timeout=1
                 )
                 if result.returncode == 0:
                     return player
-            except:
+            except Exception:
                 continue
         return "mpv"
 
@@ -231,17 +312,20 @@ class Player:
                 stderr=subprocess.DEVNULL,
             )
             return True
-        except:
+        except Exception:
             return False
 
 
 class HdRezkaApp:
-    def __init__(self, auth_file: str = None):
+    def __init__(self, auth_file: str = None, open_favorites: bool = False, direct_url: str = None):
         self.config = Config()
         if auth_file:
             self.config.load_auth_file(auth_file)
+        self.open_favorites = open_favorites
+        self.direct_url = direct_url
         self.session = None
         self.current_content = None
+        self.current_item_id = None
         self.fzf = FzfSelector()
         self.player = Player(self.config.load("player"))
         self.executor = ThreadPoolExecutor(max_workers=4)
@@ -250,9 +334,10 @@ class HdRezkaApp:
         url = self.config.load("url", "https://hdrezka.ag")
         username = self.config.load("username", "")
         password = self.config.load("password", "")
+    
+        self.config.update_favorites_mirror()
 
         try:
-            # Run synchronous HdRezkaSession setup in thread pool
             loop = asyncio.get_event_loop()
             self.session = await loop.run_in_executor(
                 self.executor, lambda: HdRezkaSession(url)
@@ -266,16 +351,20 @@ class HdRezkaApp:
             print(f"Connection error: {e}")
             return False
 
+    def _clean_text(self, s: str | None) -> str:
+        if not isinstance(s, str):
+            return ""
+        s = re.sub(r"[\r\n\t]", "", s)
+        return s.strip()
+
     async def get_search_query(self):
         try:
-            print("Search: ", end="", flush=True)
-            # Use asyncio to read input without blocking
+            print("Search (Ctrl-C to exit): ", end="", flush=True)
             loop = asyncio.get_event_loop()
             query = await loop.run_in_executor(self.executor, sys.stdin.readline)
             return query.strip()
         except (KeyboardInterrupt, EOFError):
-            print("\nGoodbye!")
-            sys.exit(0)
+            return None
 
     async def search_and_select(self):
         query = await self.get_search_query()
@@ -283,7 +372,6 @@ class HdRezkaApp:
             return None
 
         try:
-            # Run search in thread pool
             loop = asyncio.get_event_loop()
             search_obj = await loop.run_in_executor(
                 self.executor, lambda: self.session.search(query, find_all=True)
@@ -305,9 +393,16 @@ class HdRezkaApp:
                 print("No results found")
                 return None
 
+            favorites = self.config.load_favorites()
+            fav_ids = {fav.get("id") for fav in favorites}
+
             result_items = []
             for item in results:
-                title = item["title"]
+                title = self._clean_text(item.get("title", ""))
+                item_id = self._extract_id(item.get("url", ""))
+        
+                fav_mark = "!!! " if item_id in fav_ids else ""
+        
                 extras = []
                 if "year" in item:
                     extras.append(str(item["year"]))
@@ -317,7 +412,11 @@ class HdRezkaApp:
                     )
                     extras.append(content_type)
 
-                display = f"{title}" + (f" [{', '.join(extras)}]" if extras else "")
+                id_str = f"[{item_id}] " if item_id else ""
+                display = (
+                    f"{fav_mark}{id_str}{title}"
+                    + (f" ({', '.join(extras)})" if extras else "")
+                )
                 result_items.append({"display": display, "value": item})
 
             return await self.fzf.select(result_items, prompt="Select Content")
@@ -326,22 +425,94 @@ class HdRezkaApp:
             print(f"Search error: {e}")
             return None
 
-    async def load_content(self, item):
+    async def browse_favorites(self):
+        favs = self.config.load_favorites()
+        if not favs:
+            print("No favorites yet...")
+            return None
+
+        items = []
+        for fav in favs:
+            fav_id = fav.get("id")
+            fav_type = fav.get("type", "")
+            type_str = f" [{fav_type}]" if fav_type else ""
+            url_short = fav.get("url-short", "")
+            url_str = f" ({url_short})" if url_short else ""
+    
+            watched = fav.get("watched", {})
+            watched_str = ""
+            if watched:
+                parts = []
+                for sk in sorted(watched.keys()):
+                    eps = watched[sk]
+                    parts.append(f"{sk}:{','.join(str(e) for e in eps)}")
+                watched_str = f"  ✓ {' '.join(parts)}"
+    
+            display = f"ID: {fav_id}{type_str}{url_str}{watched_str}"
+            items.append({"display": display, "value": fav})
+
+        items.append({"display": "── Remove from favorites ──", "value": "__remove__"})
+
+        selected = await self.fzf.select(items, prompt="Favorites")
+        if selected is None:
+            return None
+
+        if selected == "__remove__":
+            await self.remove_favorite_menu(favs)
+            return None
+
+        url_short = selected.get("url-short")
+        if url_short:
+            mirror = self.config.get_mirror()
+            url = f"{mirror}/{url_short}"
+        else:
+            fav_id = selected.get("id")
+            url = f"https://hdrezka.ag/{fav_id}"
+    
+        item = {"url": url}
+        return item, selected.get("id")
+
+    async def remove_favorite_menu(self, favs):
+        items = [
+            {"display": f"ID: {f.get('id')} [{f.get('type', 'unknown')}]", "value": f}
+            for f in favs
+        ]
+        selected = await self.fzf.select(items, prompt="Remove")
+        if selected:
+            self.config.remove_favorite(selected.get("id"))
+            print(f"\033[33m✗\033[0m Removed ID {selected.get('id')} from favorites")
+            
+    def _extract_id(self, url: str) -> int | None:
+        try:
+            slug = url.rstrip("/").split("/")[-1]
+            part = slug.split("-")[0]
+            if part.isdigit():
+                return int(part)
+        except Exception:
+            pass
+        return None
+
+    async def load_content(self, item, item_id=None):
         try:
             loop = asyncio.get_event_loop()
+            slug = item["url"].rstrip("/").split("/")[-1]
             self.current_content = await loop.run_in_executor(
-                self.executor, lambda: self.session.get(item["url"].split("/")[-1])
+                self.executor, lambda: self.session.get(slug)
             )
+            if self.current_content is None:
+                return False
+            self.current_item_id = item_id or self._extract_id(item.get("url", ""))
+            self.current_slug = slug
             return True
         except Exception as e:
             print(f"Error loading content: {e}")
+            self.current_content = None
             return False
 
     async def is_series(self):
         try:
             if hasattr(self.current_content, "seriesInfo"):
                 try:
-                    # Run in thread pool to avoid blocking
                     loop = asyncio.get_event_loop()
                     series_info = await loop.run_in_executor(
                         self.executor, lambda: self.current_content.seriesInfo
@@ -353,6 +524,7 @@ class HdRezkaApp:
 
             if hasattr(self.current_content, "episodesInfo"):
                 try:
+                    loop = asyncio.get_event_loop()
                     episodes = await loop.run_in_executor(
                         self.executor, lambda: self.current_content.episodesInfo
                     )
@@ -366,7 +538,7 @@ class HdRezkaApp:
                     content_type = str(self.current_content.type).lower()
                     if any(x in content_type for x in ["series", "tvshow", "сериал"]):
                         return True
-                except:
+                except Exception:
                     pass
 
             return False
@@ -436,7 +608,7 @@ class HdRezkaApp:
                                         )
                                     break
                             break
-                except:
+                except Exception:
                     pass
 
             if not translations and hasattr(self.current_content, "translators"):
@@ -519,9 +691,16 @@ class HdRezkaApp:
     async def show_content_menu(self):
         content = self.current_content
         content_type = "Series" if await self.is_series() else "Movie"
+        item_id = self.current_item_id
+        in_favorites = self.config.find_favorite(item_id) is not None if item_id else False
 
         menu_items = []
         menu_items.append({"display": "Watch", "value": "watch"})
+
+        if in_favorites:
+            menu_items.append({"display": "Remove from favorites", "value": "fav_remove"})
+        else:
+            menu_items.append({"display": "Add to favorites", "value": "fav_add"})
 
         if await self.is_series():
             menu_items.append(
@@ -541,15 +720,17 @@ class HdRezkaApp:
             )
 
         menu_items.append({"display": "━━━ Info ━━━", "value": None})
-        menu_items.append({"display": f"Title: {content.name}", "value": None})
-        menu_items.append({"display": f"Original: {content.origName}", "value": None})
+
+        id_str = f" [{item_id}]" if item_id else ""
+        title = self._clean_text(content.name)
+        orig = self._clean_text(content.origName)
+
+        menu_items.append({"display": f"Title: {title}{id_str}", "value": None})
+        menu_items.append({"display": f"Original: {orig}", "value": None})
 
         if hasattr(content, "description") and content.description:
-            desc = (
-                content.description[:150] + "…"
-                if len(content.description) > 150
-                else content.description
-            )
+            desc_raw = self._clean_text(content.description)
+            desc = (desc_raw[:150] + "…") if len(desc_raw) > 150 else desc_raw
             menu_items.append({"display": f"Description: {desc}", "value": None})
 
         menu_items.extend(
@@ -559,6 +740,16 @@ class HdRezkaApp:
                 {"display": f"Rating: {content.rating}", "value": None},
             ]
         )
+
+        if in_favorites and await self.is_series() and item_id:
+            watched = self.config.get_watched(item_id)
+            if watched:
+                for sk in sorted(watched.keys()):
+                    eps = watched[sk]
+                    ep_str = ", ".join(str(e) for e in eps)
+                    menu_items.append(
+                        {"display": f"Watched {sk}: episodes {ep_str}", "value": None}
+                    )
 
         return await self.fzf.select(menu_items, prompt=f"{content_type} Menu")
 
@@ -578,10 +769,12 @@ class HdRezkaApp:
             try:
                 loop = asyncio.get_event_loop()
                 self.current_content = await loop.run_in_executor(
-                    self.executor, lambda: self.session.get(selected_url.split("/")[-1])
+                    self.executor,
+                    lambda: self.session.get(selected_url.rstrip("/").split("/")[-1]),
                 )
+                self.current_item_id = self._extract_id(selected_url)
                 return True
-            except:
+            except Exception:
                 return False
         return False
 
@@ -631,13 +824,21 @@ class HdRezkaApp:
                 print("This content doesn't have episodes")
                 return None, None
 
+            watched = {}
+            if self.current_item_id:
+                watched = self.config.get_watched(self.current_item_id)
+
             if len(episodes_info) == 1:
                 season = episodes_info[0]
             else:
                 season_items = []
                 for s in episodes_info:
                     if isinstance(s, dict) and s.get("episodes"):
-                        display = f"Season {s.get('season', '?')} ({len(s['episodes'])} episodes)"
+                        sn = s.get("season", "?")
+                        watched_eps = watched.get(f"s{sn}", [])
+                        total = len(s["episodes"])
+                        w_str = f" ✓{len(watched_eps)}/{total}" if watched_eps else f" {total} ep"
+                        display = f"Season {sn}{w_str}"
                         season_items.append({"display": display, "value": s})
 
                 if not season_items:
@@ -658,11 +859,16 @@ class HdRezkaApp:
                 print(f"No episodes for season {season_num}")
                 return None, None
 
+            watched_eps = watched.get(f"s{season_num}", [])
+
             episode_items = []
             for e in episodes:
                 ep_num = e.get("episode")
                 if ep_num:
-                    episode_items.append({"display": f"Episode {ep_num}", "value": e})
+                    w_mark = " ✓" if ep_num in watched_eps else ""
+                    episode_items.append(
+                        {"display": f"Episode {ep_num}{w_mark}", "value": e}
+                    )
 
             if not episode_items:
                 print("No episodes available")
@@ -675,7 +881,6 @@ class HdRezkaApp:
                 return None, None
 
             episode_num = episode.get("episode")
-
             return season_num, episode_num
 
         except Exception as e:
@@ -705,7 +910,11 @@ class HdRezkaApp:
                                         else season_num
                                     ),
                                     "episodes": [
-                                        {"episode": int(e) if str(e).isdigit() else e}
+                                        {
+                                            "episode": int(e)
+                                            if str(e).isdigit()
+                                            else e
+                                        }
                                         for e in episodes
                                     ],
                                 }
@@ -751,7 +960,7 @@ class HdRezkaApp:
         if not quality:
             return
 
-        title = self.current_content.name
+        title = self._clean_text(self.current_content.name)
         results = {}
         for s, e in all_eps:
             try:
@@ -768,7 +977,7 @@ class HdRezkaApp:
         safe_translator = self._safe_name(translator_name or "unknown")
         filename = f"{safe_title}_{safe_quality}_{safe_translator}_urls.txt"
 
-        with open(filename, "w", encoding="utf-8") as f:
+        with open(filename, "w") as f:
             f.write(f"{title} — {quality} — {translator_name}\n")
             f.write("=" * 60 + "\n\n")
             for sn in sorted(results.keys()):
@@ -807,7 +1016,7 @@ class HdRezkaApp:
         if not quality:
             return
 
-        title = self.current_content.name
+        title = self._clean_text(self.current_content.name)
         safe_title = self._safe_name(title)
         safe_quality = self._safe_name(quality)
         safe_translator = self._safe_name(translator_name or "unknown")
@@ -821,7 +1030,7 @@ class HdRezkaApp:
             print(f"Error getting URLs: {ex}")
             return
 
-        with open(filename, "w", encoding="utf-8") as f:
+        with open(filename, "w") as f:
             f.write(f"{title} — {quality} — {translator_name}\n")
             f.write("=" * 60 + "\n\n")
             for i, url in enumerate(urls, 1):
@@ -858,9 +1067,9 @@ class HdRezkaApp:
 
                 except UnicodeDecodeError:
                     if attempt == 2:
-                        print(f"❌ Failed after 3 attempts")
+                        print("Failed after 3 attempts")
                         return
-                    print(f"⚠️  Decode error, retrying ({attempt+1}/3)")
+                    print(f"Decode error, retrying ({attempt+1}/3)")
                     continue
                 except Exception as e:
                     print(f"Error getting stream: {e}")
@@ -886,7 +1095,7 @@ class HdRezkaApp:
             except Exception:
                 raw = stream(quality)
                 if isinstance(raw, bytes):
-                    raw = raw.decode("utf-8", errors="ignore")
+                    raw = raw.decode(errors="ignore")
                 if isinstance(raw, str):
                     urls = json.loads(raw) if raw.strip().startswith("[") else [raw]
                 elif isinstance(raw, list):
@@ -905,10 +1114,18 @@ class HdRezkaApp:
                 url = await self.fzf.select(url_items, prompt="Select Mirror")
 
             if url:
-                title = self.current_content.name
+                title = self._clean_text(self.current_content.name)
                 if season and episode:
                     title += f" S{season}E{episode}"
                 self.player.play(url, title)
+
+                if (
+                    season
+                    and episode
+                    and self.current_item_id
+                    and self.config.find_favorite(self.current_item_id)
+                ):
+                    self.config.mark_watched(self.current_item_id, season, episode)
 
         except Exception as e:
             print(f"Playback error: {e}")
@@ -921,6 +1138,65 @@ class HdRezkaApp:
             print("fzf not found. Please install fzf")
             return
 
+        if self.direct_url:
+            item_id = self._extract_id(self.direct_url)
+
+            if not self.direct_url.startswith("http"):
+                slug = self.direct_url
+            else:
+                slug = self.direct_url.rstrip("/").split("/")[-1]
+
+            item = {"url": f"https://hdrezka.ag/{slug}"}
+
+            if await self.load_content(item, item_id):
+                if self.current_content is None:
+                    print("Failed to load content")
+                    return
+            
+                while True:
+                    action = await self.show_content_menu()
+
+                    if action is None:
+                        break
+
+                    if action == "fav_add":
+                        if self.current_item_id:
+                            content_type = "series" if await self.is_series() else "movie"
+                            self.config.add_favorite(
+                                self.current_item_id,
+                                content_type,
+                                self.current_slug
+                            )
+                            print("★ Added to favorites")
+                        continue
+
+                    if action == "fav_remove":
+                        if self.current_item_id:
+                            self.config.remove_favorite(self.current_item_id)
+                            print("✗ Removed from favorites")
+                        continue
+
+                    if action == "other_parts":
+                        await self.handle_other_parts()
+                        continue
+
+                    if action == "export_urls":
+                        await self.export_all_urls()
+                        continue
+
+                    if action == "export_movie_urls":
+                        await self.export_movie_urls()
+                        continue
+
+                    if action == "watch":
+                        if await self.is_series():
+                            season, episode = await self.select_episode()
+                            if season and episode:
+                                await self.play_content(season, episode)
+                        else:
+                            await self.play_content()
+            return
+
         def sigint_handler(sig, frame):
             print("\nGoodbye!")
             sys.exit(0)
@@ -929,18 +1205,62 @@ class HdRezkaApp:
 
         while True:
             try:
-                item = await self.search_and_select()
-                if not item:
+                item = None
+                item_id = None
+
+                if self.open_favorites:
+                    self.open_favorites = False
+                    result = await self.browse_favorites()
+                    if result is None:
+                        continue
+                    item, item_id = result
+                else:
+                    item = await self.search_and_select()
+                    if item is None:
+                        choice = await self.fzf.select(
+                            [
+                                {"display": "Open favorites", "value": "favs"},
+                                {"display": "Exit", "value": "exit"},
+                            ],
+                            prompt="",
+                        )
+                        if choice == "favs":
+                            result = await self.browse_favorites()
+                            if result is None:
+                                continue
+                            item, item_id = result
+                        else:
+                            break
+                        continue
+
+                if item is None:
                     continue
 
-                if not await self.load_content(item):
+                if not await self.load_content(item, item_id):
                     continue
 
                 while True:
                     action = await self.show_content_menu()
 
-                    if not action or action is None:
+                    if action is None:
                         break
+
+                    if action == "fav_add":
+                        if self.current_item_id:
+                            content_type = "series" if await self.is_series() else "movie"
+                            self.config.add_favorite(
+                                self.current_item_id,
+                                content_type,
+                                self.current_slug
+                            )
+                            print("★ Added to favorites")
+                        continue
+
+                    if action == "fav_remove":
+                        if self.current_item_id:
+                            self.config.remove_favorite(self.current_item_id)
+                            print("✗ Removed from favorites")
+                        continue
 
                     if action == "other_parts":
                         await self.handle_other_parts()
@@ -963,12 +1283,13 @@ class HdRezkaApp:
                             await self.play_content()
 
             except KeyboardInterrupt:
+                print("\nGoodbye!")
                 break
             except Exception as e:
                 print(f"Error: {e}")
                 continue
-        self.executor.shutdown(wait=True)
 
+        self.executor.shutdown(wait=True)
 
 def main():
     import argparse
@@ -981,12 +1302,21 @@ def main():
         "--authFile",
         metavar="PATH",
         help="Path to a file containing username and password "
-        "(plain lines or key=value format). "
-        "Example: rezka-fzf --authFile ./login.txt",
+        "(plain lines or key=value format).",
+    )
+    parser.add_argument(
+        "--favorites",
+        action="store_true",
+        help="Open favorites list on startup.",
+    )
+    parser.add_argument(
+        "--url",
+        metavar="URL_OR_ID",
+        help="Open content directly by URL or ID (e.g., 'https://hdrezka.ag/434365-pantheon.html' or '434365').",
     )
     args = parser.parse_args()
 
-    app = HdRezkaApp(auth_file=args.authFile)
+    app = HdRezkaApp(auth_file=args.authFile, open_favorites=args.favorites, direct_url=args.url)
     asyncio.run(app.run())
 
 
