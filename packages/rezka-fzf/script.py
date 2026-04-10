@@ -25,10 +25,13 @@ Features:
     - Favorites list with watched episode tracking
 """
 
+
 def _represent_list(self, data):
-    return self.represent_sequence('tag:yaml.org,2002:seq', data, flow_style=True)
+    return self.represent_sequence("tag:yaml.org,2002:seq", data, flow_style=True)
+
 
 SafeRepresenter.add_representer(list, _represent_list)
+
 
 class Config:
     def __init__(self):
@@ -58,7 +61,13 @@ class Config:
 
             os.makedirs(self.config_dir, exist_ok=True)
             with open(self.config_path, "w") as f:
-                yaml.dump(config_data, f, allow_unicode=True, default_flow_style=False, indent=2)
+                yaml.dump(
+                    config_data,
+                    f,
+                    allow_unicode=True,
+                    default_flow_style=False,
+                    indent=2,
+                )
 
             print(f"\nConfiguration saved to: {self.config_path}\n")
 
@@ -129,21 +138,23 @@ class Config:
                 return fav
         return None
 
-    def add_favorite(self, item_id: int, content_type: str = None, url_short: str = None):
+    def add_favorite(
+        self, item_id: int, content_type: str = None, url_short: str = None
+    ):
         favs = self.load_favorites()
         for fav in favs:
             if fav.get("id") == item_id:
-                return    
+                return
 
         mirror = self.get_mirror()
         fav_item = {
             "id": item_id,
             "type": content_type,
             "url": f"{mirror}/{url_short}" if url_short else None,
-            "url-short": url_short
+            "url-short": url_short,
         }
         fav_item = {k: v for k, v in fav_item.items() if v is not None}
-    
+
         favs.append(fav_item)
         self.save_favorites(favs)
 
@@ -317,7 +328,12 @@ class Player:
 
 
 class HdRezkaApp:
-    def __init__(self, auth_file: str = None, open_favorites: bool = False, direct_url: str = None):
+    def __init__(
+        self,
+        auth_file: str = None,
+        open_favorites: bool = False,
+        direct_url: str = None,
+    ):
         self.config = Config()
         if auth_file:
             self.config.load_auth_file(auth_file)
@@ -334,7 +350,7 @@ class HdRezkaApp:
         url = self.config.load("url", "https://hdrezka.ag")
         username = self.config.load("username", "")
         password = self.config.load("password", "")
-    
+
         self.config.update_favorites_mirror()
 
         try:
@@ -400,9 +416,9 @@ class HdRezkaApp:
             for item in results:
                 title = self._clean_text(item.get("title", ""))
                 item_id = self._extract_id(item.get("url", ""))
-        
+
                 fav_mark = "!!! " if item_id in fav_ids else ""
-        
+
                 extras = []
                 if "year" in item:
                     extras.append(str(item["year"]))
@@ -413,9 +429,8 @@ class HdRezkaApp:
                     extras.append(content_type)
 
                 id_str = f"[{item_id}] " if item_id else ""
-                display = (
-                    f"{fav_mark}{id_str}{title}"
-                    + (f" ({', '.join(extras)})" if extras else "")
+                display = f"{fav_mark}{id_str}{title}" + (
+                    f" ({', '.join(extras)})" if extras else ""
                 )
                 result_items.append({"display": display, "value": item})
 
@@ -438,7 +453,7 @@ class HdRezkaApp:
             type_str = f" [{fav_type}]" if fav_type else ""
             url_short = fav.get("url-short", "")
             url_str = f" ({url_short})" if url_short else ""
-    
+
             watched = fav.get("watched", {})
             watched_str = ""
             if watched:
@@ -447,7 +462,7 @@ class HdRezkaApp:
                     eps = watched[sk]
                     parts.append(f"{sk}:{','.join(str(e) for e in eps)}")
                 watched_str = f"  ✓ {' '.join(parts)}"
-    
+
             display = f"ID: {fav_id}{type_str}{url_str}{watched_str}"
             items.append({"display": display, "value": fav})
 
@@ -468,7 +483,7 @@ class HdRezkaApp:
         else:
             fav_id = selected.get("id")
             url = f"https://hdrezka.ag/{fav_id}"
-    
+
         item = {"url": url}
         return item, selected.get("id")
 
@@ -481,7 +496,7 @@ class HdRezkaApp:
         if selected:
             self.config.remove_favorite(selected.get("id"))
             print(f"\033[33m✗\033[0m Removed ID {selected.get('id')} from favorites")
-            
+
     def _extract_id(self, url: str) -> int | None:
         try:
             slug = url.rstrip("/").split("/")[-1]
@@ -692,13 +707,17 @@ class HdRezkaApp:
         content = self.current_content
         content_type = "Series" if await self.is_series() else "Movie"
         item_id = self.current_item_id
-        in_favorites = self.config.find_favorite(item_id) is not None if item_id else False
+        in_favorites = (
+            self.config.find_favorite(item_id) is not None if item_id else False
+        )
 
         menu_items = []
         menu_items.append({"display": "Watch", "value": "watch"})
 
         if in_favorites:
-            menu_items.append({"display": "Remove from favorites", "value": "fav_remove"})
+            menu_items.append(
+                {"display": "Remove from favorites", "value": "fav_remove"}
+            )
         else:
             menu_items.append({"display": "Add to favorites", "value": "fav_add"})
 
@@ -837,7 +856,11 @@ class HdRezkaApp:
                         sn = s.get("season", "?")
                         watched_eps = watched.get(f"s{sn}", [])
                         total = len(s["episodes"])
-                        w_str = f" ✓{len(watched_eps)}/{total}" if watched_eps else f" {total} ep"
+                        w_str = (
+                            f" ✓{len(watched_eps)}/{total}"
+                            if watched_eps
+                            else f" {total} ep"
+                        )
                         display = f"Season {sn}{w_str}"
                         season_items.append({"display": display, "value": s})
 
@@ -910,11 +933,7 @@ class HdRezkaApp:
                                         else season_num
                                     ),
                                     "episodes": [
-                                        {
-                                            "episode": int(e)
-                                            if str(e).isdigit()
-                                            else e
-                                        }
+                                        {"episode": int(e) if str(e).isdigit() else e}
                                         for e in episodes
                                     ],
                                 }
@@ -1039,6 +1058,149 @@ class HdRezkaApp:
 
         print(f"\033[32m✓\033[0m {title} ({quality}) → \033[1m{filename}\033[0m")
 
+    async def _build_season_playlist(
+        self, season_num, start_episode, translator_id, quality
+    ):
+        """Build an M3U playlist for all episodes in a season, starting from start_episode"""
+        all_eps = await self._get_all_episodes()
+        season_eps = [(s, e) for s, e in all_eps if s == season_num]
+
+        if not season_eps:
+            return None, 0
+
+        title = self._clean_text(self.current_content.name)
+        lines = ["#EXTM3U"]
+        start_index = 0
+
+        for idx, (s, e) in enumerate(season_eps):
+            if e == start_episode:
+                start_index = idx
+            try:
+                stream = await self._get_stream_object(s, e, translator_id)
+                urls = stream.videos.get(quality, [])
+                if not isinstance(urls, list):
+                    urls = [urls]
+                url = urls[0] if urls else None
+            except Exception:
+                url = None
+
+            ep_title = f"{title} — S{s:02d}E{e:02d}"
+            lines.append(f"#EXTINF:-1,{ep_title}")
+            lines.append(url if url else "#MISSING")
+
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".m3u",
+            delete=False,
+            prefix=f"{self._safe_name(title)}_S{season_num}_",
+        ) as f:
+            f.write("\n".join(lines))
+            return f.name, start_index, season_eps
+
+    async def _launch_mpv_with_tracking(
+        self, playlist_path, start_index, season_num, season_eps, ep_title
+    ):
+        """Launch mpv with IPC socket to track which episodes were watched"""
+        import tempfile
+        import json as _json
+
+        socket_path = tempfile.mktemp(prefix="rezka_mpv_", suffix=".sock")
+        title = self._clean_text(self.current_content.name)
+
+        cmd = [
+            "mpv",
+            f"--title={ep_title}",
+            f"--playlist-start={start_index}",
+            f"--input-ipc-server={socket_path}",
+            "--idle=once",
+            playlist_path,
+        ]
+
+        proc = subprocess.Popen(
+            cmd,
+            start_new_session=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+        print(
+            f"\033[32m✓\033[0m Playlist opened from episode {season_eps[start_index][1]}, tracking watch progress..."
+        )
+        print("  (close mpv or press Ctrl-C here to stop tracking)\n")
+
+        loop = asyncio.get_event_loop()
+
+        async def poll_mpv():
+            for _ in range(30):
+                if os.path.exists(socket_path):
+                    break
+                await asyncio.sleep(0.2)
+            else:
+                return
+
+            last_playlist_pos = None
+
+            while proc.poll() is None:
+                try:
+                    reader, writer = await asyncio.open_unix_connection(socket_path)
+
+                    async def get_prop(prop):
+                        writer.write(
+                            (
+                                _json.dumps({"command": ["get_property", prop]}) + "\n"
+                            ).encode()
+                        )
+                        await writer.drain()
+                        line = await asyncio.wait_for(reader.readline(), timeout=1.0)
+                        data = _json.loads(line)
+                        return data.get("data")
+
+                    pos = await get_prop("playlist-pos")
+                    writer.close()
+                    await writer.wait_closed()
+
+                    if pos is not None and pos != last_playlist_pos:
+                        if last_playlist_pos is not None:
+                            idx = last_playlist_pos
+                            if 0 <= idx < len(season_eps):
+                                s, e = season_eps[idx]
+                                if self.current_item_id and self.config.find_favorite(
+                                    self.current_item_id
+                                ):
+                                    self.config.mark_watched(self.current_item_id, s, e)
+                                    print(
+                                        f"  \033[32m✓\033[0m Marked S{s:02d}E{e:02d} as watched"
+                                    )
+                        last_playlist_pos = pos
+
+                except Exception:
+                    pass
+
+                await asyncio.sleep(2)
+
+            if last_playlist_pos is not None:
+                idx = last_playlist_pos
+                if 0 <= idx < len(season_eps):
+                    s, e = season_eps[idx]
+                    if self.current_item_id and self.config.find_favorite(
+                        self.current_item_id
+                    ):
+                        self.config.mark_watched(self.current_item_id, s, e)
+                        print(f"  \033[32m✓\033[0m Marked S{s:02d}E{e:02d} as watched")
+
+            try:
+                os.unlink(socket_path)
+            except Exception:
+                pass
+            try:
+                os.unlink(playlist_path)
+            except Exception:
+                pass
+
+        await poll_mpv()
+
     async def play_content(self, season=None, episode=None):
         try:
             is_series_content = False
@@ -1048,6 +1210,7 @@ class HdRezkaApp:
                 is_series_content = season is not None and episode is not None
 
             stream = None
+            translator_id = None
             for attempt in range(3):
                 try:
                     translator_id, _ = await self._select_translator(season, episode)
@@ -1088,6 +1251,37 @@ class HdRezkaApp:
             if not quality:
                 return
 
+            if is_series_content and season is not None and episode is not None:
+                print(f"Building season {season} playlist...")
+                playlist_path, start_index, season_eps = (
+                    await self._build_season_playlist(
+                        season, episode, translator_id, quality
+                    )
+                )
+                if playlist_path:
+                    title = self._clean_text(self.current_content.name)
+                    ep_title = f"{title} S{season:02d}E{episode:02d}"
+
+                    cmd = [
+                        "mpv",
+                        f"--title={ep_title}",
+                        f"--playlist-start={start_index}",
+                        playlist_path,
+                    ]
+                    try:
+                        await self._launch_mpv_with_tracking(
+                            playlist_path, start_index, season, season_eps, ep_title
+                        )
+                    except Exception as e:
+                        print(f"Error launching mpv: {e}")
+
+                    if self.current_item_id and self.config.find_favorite(
+                        self.current_item_id
+                    ):
+                        self.config.mark_watched(self.current_item_id, season, episode)
+                return
+
+            # Movie: original single-file behaviour
             try:
                 urls = stream.videos.get(quality, [])
                 if not isinstance(urls, list):
@@ -1115,17 +1309,7 @@ class HdRezkaApp:
 
             if url:
                 title = self._clean_text(self.current_content.name)
-                if season and episode:
-                    title += f" S{season}E{episode}"
                 self.player.play(url, title)
-
-                if (
-                    season
-                    and episode
-                    and self.current_item_id
-                    and self.config.find_favorite(self.current_item_id)
-                ):
-                    self.config.mark_watched(self.current_item_id, season, episode)
 
         except Exception as e:
             print(f"Playback error: {e}")
@@ -1152,7 +1336,7 @@ class HdRezkaApp:
                 if self.current_content is None:
                     print("Failed to load content")
                     return
-            
+
                 while True:
                     action = await self.show_content_menu()
 
@@ -1161,11 +1345,11 @@ class HdRezkaApp:
 
                     if action == "fav_add":
                         if self.current_item_id:
-                            content_type = "series" if await self.is_series() else "movie"
+                            content_type = (
+                                "series" if await self.is_series() else "movie"
+                            )
                             self.config.add_favorite(
-                                self.current_item_id,
-                                content_type,
-                                self.current_slug
+                                self.current_item_id, content_type, self.current_slug
                             )
                             print("★ Added to favorites")
                         continue
@@ -1247,11 +1431,11 @@ class HdRezkaApp:
 
                     if action == "fav_add":
                         if self.current_item_id:
-                            content_type = "series" if await self.is_series() else "movie"
+                            content_type = (
+                                "series" if await self.is_series() else "movie"
+                            )
                             self.config.add_favorite(
-                                self.current_item_id,
-                                content_type,
-                                self.current_slug
+                                self.current_item_id, content_type, self.current_slug
                             )
                             print("★ Added to favorites")
                         continue
@@ -1291,6 +1475,7 @@ class HdRezkaApp:
 
         self.executor.shutdown(wait=True)
 
+
 def main():
     import argparse
 
@@ -1316,7 +1501,9 @@ def main():
     )
     args = parser.parse_args()
 
-    app = HdRezkaApp(auth_file=args.authFile, open_favorites=args.favorites, direct_url=args.url)
+    app = HdRezkaApp(
+        auth_file=args.authFile, open_favorites=args.favorites, direct_url=args.url
+    )
     asyncio.run(app.run())
 
 
