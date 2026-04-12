@@ -17,14 +17,8 @@ stdenv.mkDerivation (_old: {
   nativeBuildInputs = [ p7zip ];
 
   installPhase = ''
-    mkdir -p $out/{bin,share/votv}
-    mv WindowsNoEditor/* $out/share/votv
-
-    ln -s $out/share/votv/VotV.exe $out/bin/votv
-    ln -s $out/share/votv/VotV.exe $out/bin/VotV.exe
-
-    chmod +x $out/share/votv/VotV.exe \
-      $out/bin/votv $out/bin/VotV.exe
+    mkdir -p $out/bin
+    mv WindowsNoEditor/* $out/bin
   '';
 
   meta = {
