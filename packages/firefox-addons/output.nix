@@ -103,10 +103,10 @@
   };
   "keepassxc-browser" = buildFirefoxXpiAddon {
     pname = "keepassxc-browser";
-    version = "1.10.0.1";
+    version = "1.10.1";
     addonId = "keepassxc-browser@keepassxc.org";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4717960/keepassxc_browser-1.10.0.1.xpi";
-    sha256 = "b7ddeb144036ce22fd687a531dbc5a04bd7b3596f9fa713fc004b29b6ca28340";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4750788/keepassxc_browser-1.10.1.xpi";
+    sha256 = "f358471e7f5545a64ab69f4897127033197a8d9cde5746324b1dae241a2b0a29";
     meta = with lib; {
       homepage = "https://keepassxc.org/";
       description = "Official browser plugin for the KeePassXC password manager (https://keepassxc.org).";
@@ -133,10 +133,10 @@
   };
   "bitwarden-password-manager" = buildFirefoxXpiAddon {
     pname = "bitwarden-password-manager";
-    version = "2026.2.0";
+    version = "2026.3.0";
     addonId = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4715321/bitwarden_password_manager-2026.2.0.xpi";
-    sha256 = "e54999d45ae1cd001452a34294240633c89a95ae832f212721d746a89555958e";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4749958/bitwarden_password_manager-2026.3.0.xpi";
+    sha256 = "2dc6d074d4dc0abd2a8966f5065a55e7252bbf5e54b23c31dbedabfac0d4dbc4";
     meta = with lib; {
       homepage = "https://bitwarden.com";
       description = "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.";
@@ -303,10 +303,10 @@
   };
   "darkreader" = buildFirefoxXpiAddon {
     pname = "darkreader";
-    version = "4.9.123";
+    version = "4.9.124";
     addonId = "addon@darkreader.org";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4710145/darkreader-4.9.123.xpi";
-    sha256 = "9a3e6cdac53f20257bd81264532c16afedad00eb2623bded89ed2b30b1e40243";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4748915/darkreader-4.9.124.xpi";
+    sha256 = "ce703c98545999cee0b5c416f4fd4a3080f1405440f005d5c5cf23ac0868bcbd";
     meta = with lib; {
       homepage = "https://darkreader.org/";
       description = "Dark mode for every website. Take care of your eyes, use dark theme for night and daily browsing.";
@@ -324,10 +324,10 @@
   };
   "sponsorblock" = buildFirefoxXpiAddon {
     pname = "sponsorblock";
-    version = "6.1.2";
+    version = "6.1.3";
     addonId = "sponsorBlocker@ajay.app";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4644570/sponsorblock-6.1.2.xpi";
-    sha256 = "598f66c9eb6bbab2bd5f87376b632a5860f442d3694e233610f5b37f8b6e3f10";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4744354/sponsorblock-6.1.3.xpi";
+    sha256 = "cc6ee2918298ce6a1754b462d0b54d9a96f545f65cd3ac69016332ebca1d100b";
     meta = with lib; {
       homepage = "https://sponsor.ajay.app";
       description = "Easily skip YouTube video sponsors. When you visit a YouTube video, the extension will check the database for reported sponsors and automatically skip known sponsors. You can also report sponsors in videos. Other browsers: https://sponsor.ajay.app";
@@ -345,10 +345,10 @@
   };
   "mal-sync" = buildFirefoxXpiAddon {
     pname = "mal-sync";
-    version = "0.12.2";
+    version = "0.12.3";
     addonId = "{c84d89d9-a826-4015-957b-affebd9eb603}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4617271/mal_sync-0.12.2.xpi";
-    sha256 = "77e07258ef6e7245e8ddaee0e8dcca0dd8d1820f614c1b3d3b2573a2e6db5391";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4710960/mal_sync-0.12.3.xpi";
+    sha256 = "1d9f086ffb81045f50991dca0070006cc548a1492af858f2dcf259301242ed8b";
     meta = with lib; {
       homepage = "https://github.com/lolamtisch/MALSync";
       description = "MAL-Sync enables automatic episode tracking between MyAnimeList/Anilist/Kitsu/Simkl and multiple anime streaming websites.";
@@ -369,9 +369,11 @@
           "*://myanimelist.net/search/*"
           "*://malsync.moe/mal/oauth*"
           "*://malsync.moe/anilist/oauth*"
+          "*://malsync.moe/mangabaka/oauth*"
           "*://malsync.moe/shikimori/oauth*"
           "*://anilist.co/*"
           "*://kitsu.app/*"
+          "*://mangabaka.org/*"
           "*://simkl.com/*"
           "*://malsync.moe/pwa*"
           "*://mangadex.org/*"
@@ -383,15 +385,12 @@
           "*://*.www.turkanime.co/anime/*"
           "*://app.emby.media/*"
           "*://app.emby.tv/*"
-          "*://app.plex.tv/*"
           "*://www.netflix.com/*"
           "*://*.animeflv.net/anime/*"
           "*://*.animeflv.net/ver/*"
           "*://jkanime.net/*"
           "*://proxer.me/*"
           "*://proxer.net/*"
-          "*://*.aniflix.tv/*"
-          "*://*.aniflix.cc/*"
           "*://*.kaas.am/*"
           "*://*.kaas.ro/*"
           "*://*.kaas.to/*"
@@ -401,6 +400,9 @@
           "*://*.kickassanime.mx/*"
           "*://*.kaa.mx/*"
           "*://*.kaa.to/*"
+          "*://*.kaa.si/*"
+          "*://*.kickass-anime.ro/*"
+          "*://*.kickassanime.cx/*"
           "*://shinden.pl/episode/*"
           "*://shinden.pl/series/*"
           "*://shinden.pl/titles/*"
@@ -416,7 +418,6 @@
           "*://mangadenizi.com/*"
           "*://*.mangadenizi.net/*"
           "*://moeclip.com/*"
-          "*://mangalivre.net/*"
           "*://tmofans.com/*"
           "*://lectortmo.com/*"
           "*://visortmo.com/*"
@@ -516,13 +517,14 @@
           "*://animexin.dev/*"
           "*://monoschinos.com/*"
           "*://monoschinos2.com/*"
-          "*://smotret-anime.org/catalog/*"
-          "*://smotret-anime.online/catalog/*"
-          "*://smotret-anime.com/catalog/*"
-          "*://anime365.ru/catalog/*"
-          "*://anime-365.ru/catalog/*"
-          "*://smotret-anime.ru/catalog/*"
-          "*://smotretanime.ru/catalog/*"
+          "*://smotret-anime.org/*"
+          "*://smotret-anime.online/*"
+          "*://smotret-anime.com/*"
+          "*://anime365.ru/*"
+          "*://anime-365.ru/*"
+          "*://smotret-anime.ru/*"
+          "*://smotretanime.ru/*"
+          "*://smotret-anime.app/*"
           "*://animefire.net/*"
           "*://animefire.plus/*"
           "*://otakufr.co/*"
@@ -536,7 +538,6 @@
           "*://*.tranimeizle.top/*"
           "*://tranimeizle.io/*"
           "*://www.tranimeizle.io/*"
-          "*://*.animestreamingfr.fr/*"
           "*://furyosociety.com/*"
           "*://www.animeid.tv/*"
           "*://myanimelist.net/anime/*/*/episode/*"
@@ -601,7 +602,6 @@
           "*://mangas-origines.fr/oeuvre*"
           "*://*.bluesolo.org/manga/*"
           "*://disasterscans.com/*"
-          "*://dynasty-scans.com/*"
           "*://aniworld.to/*"
           "*://betteranime.net/anime/*"
           "*://*.manga.bilibili.com/*"
@@ -627,15 +627,18 @@
           "*://fmteam.fr/*"
           "*://www.animelon.com/*"
           "*://animelon.com/*"
-          "*://anime-sama.fr/*"
+          "*://anime-sama.tv/*"
+          "*://anime-sama.si/*"
+          "*://anime-sama.to/*"
           "*://anime-sama.org/*"
+          "*://anime-sama.fr/*"
+          "*://anime-sama.eu/*"
           "*://mangafire.to/*"
           "*://projectsuki.com/*"
           "*://animebuff.ru/anime/*"
           "*://animeonegai.com/*"
           "*://www.animeonegai.com/*"
           "*://*.animeko.co/*"
-          "*://animego.org/anime/*"
           "*://animego.me/anime/*"
           "*://*.luciferdonghua.in/*"
           "*://*.luciferdonghua.co.in/*"
@@ -748,10 +751,13 @@
           "*://aniboom.one/*"
           "*://x.anizium.co/*"
           "*://smotret-anime.org/translations/embed/*"
-          "*://smotret-anime.online/translations/embed/*"
-          "*://smotret-anime.com/translations/embed/*"
           "*://anime365.ru/translations/embed/*"
           "*://anime-365.ru/translations/embed/*"
+          "*://smotret-anime.online/translations/embed/*"
+          "*://smotret-anime.com/translations/embed/*"
+          "*://smotret-anime.ru/translations/embed/*"
+          "*://smotretanime.ru/translations/embed/*"
+          "*://smotret-anime.app/translations/embed/*"
           "*://*.pstream.net/e/*"
           "*://fusevideo.net/e/*"
           "*://fusevideo.io/e/*"
@@ -775,6 +781,9 @@
           "*://*.mixdrop.sn/e/*"
           "*://*.mixdrop.cv/e/*"
           "*://*.md3b0j6hj.com/e/*"
+          "*://*.m1xdrop.net/e/*"
+          "*://*.m1xdrop.com/e/*"
+          "*://*.m1xdrop.bz/e/*"
           "*://gdriveplayer.me/embed*"
           "*://sendvid.net/v/*"
           "*://sendvid.com/embed/*"
@@ -903,6 +912,7 @@
           "*://vidmoly.me/*"
           "*://vidmoly.to/*"
           "*://vidmoly.net/*"
+          "*://vidmoly.biz/*"
           "*://upstream.to/*"
           "*://abcvideo.cc/*"
           "*://aparat.cam/*"
@@ -948,6 +958,12 @@
           "*://jilliandescribecompany.com/e/*"
           "*://lukesitturn.com/e/*"
           "*://mikaylaarealike.com/e/*"
+          "*://christopheruntilpoint.com/e/*"
+          "*://walterprettytheir.com/e/*"
+          "*://crystaltreatmenteast.com/e/*"
+          "*://myvidplay.com/e/*"
+          "*://lauradaydo.com/e/*"
+          "*://lancewhosedifficult.com/e/*"
           "*://vidoo.tv/*"
           "*://nxload.com/*"
           "*://videobin.co/*"
@@ -1037,6 +1053,7 @@
           "*://awish.pro/e/*"
           "*://hlswish.com/e/*"
           "*://swishsrv.com/e/*"
+          "*://guxhag.com/*"
           "*://alions.pro/v/*"
           "*://megaf.cc/e/*"
           "*://rogeriobetin.com/*"
@@ -1052,6 +1069,7 @@
           "*://megaup.site/e/*"
           "*://megaup.live/e/*"
           "*://4spromax.site/e/*"
+          "*://megaup22.online/e/*"
           "*://boosterx.stream/*"
           "*://player.zilla-networks.com/*"
           "*://megaplay.buzz/*"
@@ -1061,6 +1079,15 @@
           "*://emturbovid.com/*"
           "*://*.upns.live/*"
           "*://*.p2pstream.vip/*"
+          "*://player.anoboye.com/watch/*"
+          "*://zencloudz.cc/*"
+          "*://*.playerp2p.live/*"
+          "*://*.rpmvip.com/*"
+          "*://callistanise.com/*"
+          "*://habetar.com/*"
+          "*://yuguaab.com/*"
+          "*://allanime.day/*"
+          "*://allanime.uns.bio/*"
         ];
       platforms = platforms.all;
     };
