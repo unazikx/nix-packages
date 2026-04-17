@@ -118,7 +118,6 @@
 
             treefmt = {
               programs = {
-                beautysh.enable = true;
                 black.enable = true;
 
                 deadnix = {
@@ -146,34 +145,6 @@
                 #         ;
                 #     };
                 # };
-
-                formatjson5 = {
-                  enable = true;
-                  indent = 2;
-                };
-
-                prettier = {
-                  enable = true;
-                  includes = [
-                    "*.cjs"
-                    "*.css"
-                    "*.html"
-                    "*.js"
-                    "*.mjs"
-                    "*.scss"
-                    "*.ts"
-                    "*.tsx"
-                    "*.vue"
-                  ];
-
-                  settings = {
-                    bracketSameLine = true;
-                    bracketSpacing = true;
-                    embeddedLanguageFormatting = "auto";
-                    tabWidth = 2;
-                    useTabs = true;
-                  };
-                };
               };
             };
           };
