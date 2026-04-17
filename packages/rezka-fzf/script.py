@@ -25,10 +25,13 @@ Features:
     - Favorites list with watched episode tracking
 """
 
+
 def _represent_list(self, data):
-    return self.represent_sequence('tag:yaml.org,2002:seq', data, flow_style=True)
+    return self.represent_sequence("tag:yaml.org,2002:seq", data, flow_style=True)
+
 
 SafeRepresenter.add_representer(list, _represent_list)
+
 
 class Config:
     def __init__(self):
@@ -58,7 +61,13 @@ class Config:
 
             os.makedirs(self.config_dir, exist_ok=True)
             with open(self.config_path, "w") as f:
-                yaml.dump(config_data, f, allow_unicode=True, default_flow_style=False, indent=2)
+                yaml.dump(
+                    config_data,
+                    f,
+                    allow_unicode=True,
+                    default_flow_style=False,
+                    indent=2,
+                )
 
             print(f"\nConfiguration saved to: {self.config_path}\n")
 
@@ -129,21 +138,23 @@ class Config:
                 return fav
         return None
 
-    def add_favorite(self, item_id: int, content_type: str = None, url_short: str = None):
+    def add_favorite(
+        self, item_id: int, content_type: str = None, url_short: str = None
+    ):
         favs = self.load_favorites()
         for fav in favs:
             if fav.get("id") == item_id:
-                return    
+                return
 
         mirror = self.get_mirror()
         fav_item = {
             "id": item_id,
             "type": content_type,
             "url": f"{mirror}/{url_short}" if url_short else None,
-            "url-short": url_short
+            "url-short": url_short,
         }
         fav_item = {k: v for k, v in fav_item.items() if v is not None}
-    
+
         favs.append(fav_item)
         self.save_favorites(favs)
 
@@ -317,7 +328,12 @@ class Player:
 
 
 class HdRezkaApp:
-    def __init__(self, auth_file: str = None, open_favorites: bool = False, direct_url: str = None):
+    def __init__(
+        self,
+        auth_file: str = None,
+        open_favorites: bool = False,
+        direct_url: str = None,
+    ):
         self.config = Config()
         if auth_file:
             self.config.load_auth_file(auth_file)
@@ -334,7 +350,7 @@ class HdRezkaApp:
         url = self.config.load("url", "https://hdrezka.ag")
         username = self.config.load("username", "")
         password = self.config.load("password", "")
-    
+
         self.config.update_favorites_mirror()
 
         try:
@@ -400,9 +416,9 @@ class HdRezkaApp:
             for item in results:
                 title = self._clean_text(item.get("title", ""))
                 item_id = self._extract_id(item.get("url", ""))
-        
+
                 fav_mark = "!!! " if item_id in fav_ids else ""
-        
+
                 extras = []
                 if "year" in item:
                     extras.append(str(item["year"]))
@@ -413,9 +429,8 @@ class HdRezkaApp:
                     extras.append(content_type)
 
                 id_str = f"[{item_id}] " if item_id else ""
-                display = (
-                    f"{fav_mark}{id_str}{title}"
-                    + (f" ({', '.join(extras)})" if extras else "")
+                display = f"{fav_mark}{id_str}{title}" + (
+                    f" ({', '.join(extras)})" if extras else ""
                 )
                 result_items.append({"display": display, "value": item})
 
@@ -438,7 +453,7 @@ class HdRezkaApp:
             type_str = f" [{fav_type}]" if fav_type else ""
             url_short = fav.get("url-short", "")
             url_str = f" ({url_short})" if url_short else ""
-    
+
             watched = fav.get("watched", {})
             watched_str = ""
             if watched:
@@ -447,7 +462,7 @@ class HdRezkaApp:
                     eps = watched[sk]
                     parts.append(f"{sk}:{','.join(str(e) for e in eps)}")
                 watched_str = f"  ✓ {' '.join(parts)}"
-    
+
             display = f"ID: {fav_id}{type_str}{url_str}{watched_str}"
             items.append({"display": display, "value": fav})
 
@@ -468,7 +483,7 @@ class HdRezkaApp:
         else:
             fav_id = selected.get("id")
             url = f"https://hdrezka.ag/{fav_id}"
-    
+
         item = {"url": url}
         return item, selected.get("id")
 
@@ -481,7 +496,7 @@ class HdRezkaApp:
         if selected:
             self.config.remove_favorite(selected.get("id"))
             print(f"\033[33m✗\033[0m Removed ID {selected.get('id')} from favorites")
-            
+
     def _extract_id(self, url: str) -> int | None:
         try:
             slug = url.rstrip("/").split("/")[-1]
@@ -692,13 +707,17 @@ class HdRezkaApp:
         content = self.current_content
         content_type = "Series" if await self.is_series() else "Movie"
         item_id = self.current_item_id
-        in_favorites = self.config.find_favorite(item_id) is not None if item_id else False
+        in_favorites = (
+            self.config.find_favorite(item_id) is not None if item_id else False
+        )
 
         menu_items = []
         menu_items.append({"display": "Watch", "value": "watch"})
 
         if in_favorites:
-            menu_items.append({"display": "Remove from favorites", "value": "fav_remove"})
+            menu_items.append(
+                {"display": "Remove from favorites", "value": "fav_remove"}
+            )
         else:
             menu_items.append({"display": "Add to favorites", "value": "fav_add"})
 
@@ -837,7 +856,11 @@ class HdRezkaApp:
                         sn = s.get("season", "?")
                         watched_eps = watched.get(f"s{sn}", [])
                         total = len(s["episodes"])
-                        w_str = f" ✓{len(watched_eps)}/{total}" if watched_eps else f" {total} ep"
+                        w_str = (
+                            f" ✓{len(watched_eps)}/{total}"
+                            if watched_eps
+                            else f" {total} ep"
+                        )
                         display = f"Season {sn}{w_str}"
                         season_items.append({"display": display, "value": s})
 
@@ -910,11 +933,7 @@ class HdRezkaApp:
                                         else season_num
                                     ),
                                     "episodes": [
-                                        {
-                                            "episode": int(e)
-                                            if str(e).isdigit()
-                                            else e
-                                        }
+                                        {"episode": int(e) if str(e).isdigit() else e}
                                         for e in episodes
                                     ],
                                 }
@@ -1152,7 +1171,7 @@ class HdRezkaApp:
                 if self.current_content is None:
                     print("Failed to load content")
                     return
-            
+
                 while True:
                     action = await self.show_content_menu()
 
@@ -1161,11 +1180,11 @@ class HdRezkaApp:
 
                     if action == "fav_add":
                         if self.current_item_id:
-                            content_type = "series" if await self.is_series() else "movie"
+                            content_type = (
+                                "series" if await self.is_series() else "movie"
+                            )
                             self.config.add_favorite(
-                                self.current_item_id,
-                                content_type,
-                                self.current_slug
+                                self.current_item_id, content_type, self.current_slug
                             )
                             print("★ Added to favorites")
                         continue
@@ -1247,11 +1266,11 @@ class HdRezkaApp:
 
                     if action == "fav_add":
                         if self.current_item_id:
-                            content_type = "series" if await self.is_series() else "movie"
+                            content_type = (
+                                "series" if await self.is_series() else "movie"
+                            )
                             self.config.add_favorite(
-                                self.current_item_id,
-                                content_type,
-                                self.current_slug
+                                self.current_item_id, content_type, self.current_slug
                             )
                             print("★ Added to favorites")
                         continue
@@ -1291,6 +1310,7 @@ class HdRezkaApp:
 
         self.executor.shutdown(wait=True)
 
+
 def main():
     import argparse
 
@@ -1316,7 +1336,9 @@ def main():
     )
     args = parser.parse_args()
 
-    app = HdRezkaApp(auth_file=args.authFile, open_favorites=args.favorites, direct_url=args.url)
+    app = HdRezkaApp(
+        auth_file=args.authFile, open_favorites=args.favorites, direct_url=args.url
+    )
     asyncio.run(app.run())
 
 
