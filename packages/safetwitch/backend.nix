@@ -17,6 +17,11 @@ buildGoModule (_old: {
 
   vendorHash = "sha256-vXDeXCnxXoHX0kWUaK++lDpYGfls35qorx720xlfbUE=";
 
+  ldflags = [
+    "-s"
+    "-w"
+  ];
+
   meta = {
     description = "The backend for SafeTwitch";
     homepage = "https://github.com/unazikx/safetwitch-backend";

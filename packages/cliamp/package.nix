@@ -33,6 +33,11 @@ buildGoModule (_old: {
     libvorbis
   ];
 
+  ldflags = [
+    "-s"
+    "-w"
+  ];
+
   meta = {
     description = "Terminal Winamp - a retro terminal music player inspired by Winamp 2.x";
     homepage = "https://github.com/bjarneo/cliamp";
