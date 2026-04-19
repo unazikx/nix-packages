@@ -1,6 +1,6 @@
 {
   python312Packages,
-  fetchurl,
+  fetchFromGitHub,
   lib,
 }:
 
@@ -8,17 +8,19 @@ python312Packages.buildPythonApplication (_old: {
   pname = baseNameOf ./.;
   version = "git";
 
-  src = fetchurl {
-    url = "https://raw.githubusercontent.com/Frestein/qute-translate-popup/5b9ee2c379ebff84e5b69d5a81dc3c3335d10871/qute-translate-popup";
-    sha256 = "sha256-VWIxZ+48qKYkRnOKxG4hTjHfrNHQC/KCfiHr0LgRZSw=";
+  src = fetchFromGitHub {
+    owner = "Frestein";
+    repo = "qute-translate-popup";
+    rev = "5b9ee2c379ebff84e5b69d5a81dc3c3335d10871";
+    hash = "sha256-7mTpCqBYcHlj3+AkgR+dGRDz75inMCZiZ3/NNlRmnc4=";
   };
-
-  dontUnpack = true;
 
   format = "other";
 
+  dependencies = [ python312Packages.requests ];
+
   installPhase = ''
-    install -Dm755 $src $out/bin/translator
+    install -Dm755 $src/qute-translate-popup $out/bin/translator
   '';
 
   meta = {
