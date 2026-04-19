@@ -28,14 +28,6 @@ stdenv.mkDerivation (_old: {
     homepage = "https://github.com/YouROK/TorrServer";
     license = lib.licenses.gpl3;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "torrserver";
   };
 })

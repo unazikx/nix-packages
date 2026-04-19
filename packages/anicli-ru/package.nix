@@ -38,14 +38,6 @@ python312Packages.buildPythonApplication (_old: {
     description = "Watch anime with ru sources via mpv";
     homepage = "https://github.com/vypivshiy/ani-cli-ru";
     license = lib.licenses.gpl3;
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "anicli-ru";
   };
 })

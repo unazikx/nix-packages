@@ -109,14 +109,6 @@ stdenv.mkDerivation (_old: {
       "x86_64-linux"
       "x86_64-windows"
     ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "occt";
   };
 })

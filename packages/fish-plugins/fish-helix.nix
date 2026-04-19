@@ -19,13 +19,5 @@ fishPlugins.buildFishPlugin {
     description = "Helix key bindings for fish";
     homepage = "https://github.com/sshilovsky/fish-helix";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
   };
 }

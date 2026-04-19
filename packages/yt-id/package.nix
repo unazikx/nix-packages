@@ -31,15 +31,6 @@ stdenv.mkDerivation {
     homepage = "https://github.com/avanssion/youtube-channel-id-finder";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      avanssion
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "ytid";
   };
 }

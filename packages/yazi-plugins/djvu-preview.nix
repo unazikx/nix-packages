@@ -19,13 +19,5 @@ yaziPlugins.mkYaziPlugin {
     description = "Yazi plugin for djvu preview";
     homepage = "https://github.com/Shallow-Seek/djvu-view.yazi";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
   };
 }

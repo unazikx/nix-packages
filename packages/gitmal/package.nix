@@ -27,14 +27,6 @@ buildGoModule (_old: {
     homepage = "https://github.com/antonmedv/gitmal";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "gitmal";
   };
 })

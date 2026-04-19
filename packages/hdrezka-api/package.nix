@@ -29,17 +29,6 @@ python312Packages.buildPythonPackage (_old: {
   meta = {
     description = "Unofficial Python library for parsing content from HDRezka";
     license = lib.licenses.mit;
-    platforms = [
-      "x86_64-linux"
-      "x86_64-darwin"
-    ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
+    platforms = [ "x86_64-linux" ];
   };
 })

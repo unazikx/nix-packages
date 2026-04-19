@@ -27,13 +27,5 @@ stdenv.mkDerivation (_old: {
     homepage = "https://archive.org/details/tiny-11-NTDEV";
     license = lib.licenses.unfree; # it is unfree
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
   };
 })

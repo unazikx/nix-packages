@@ -27,14 +27,6 @@ python312Packages.buildPythonApplication {
     homepage = "https://gist.github.com/azikz/46ae13e0ea722203a13e318c871bb349";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "rbw-qutebrowser";
   };
 }

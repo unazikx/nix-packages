@@ -49,13 +49,5 @@ stdenv.mkDerivation {
     };
     homepage = "https://stroydocs.com/info/gost_fonts";
     platforms = lib.platforms.linux;
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
   };
 }

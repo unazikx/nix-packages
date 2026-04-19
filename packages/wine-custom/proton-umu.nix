@@ -22,14 +22,6 @@
         homepage = "https://github.com/Open-Wine-Components/umu-proton";
         license = lib.licenses.bsd3;
         platforms = [ "x86_64-linux" ];
-        maintainers = with lib.maintainers; [
-          {
-            name = "Aziz Kurbonov";
-            github = "unazikx";
-            githubId = 189107707;
-            email = "xfalwa@gmail.com";
-          }
-        ];
       };
     }
   )

@@ -19,13 +19,5 @@ yaziPlugins.mkYaziPlugin {
     description = "Documents previewer plugin, using libreoffice";
     homepage = "https://github.com/macydnah/office.yazi";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
   };
 }

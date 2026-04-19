@@ -19,14 +19,6 @@ python312Packages.buildPythonApplication (_old: {
     description = "Watch movies/series from rezka in terminal";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "rezka-fzf";
   };
 })

@@ -28,14 +28,6 @@ python312Packages.buildPythonApplication (_old: {
     homepage = "https://github.com/Frestein/qute-translate-popup";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    maintainers = with lib.maintainers; [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
     mainProgram = "translator";
   };
 })

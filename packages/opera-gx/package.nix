@@ -91,13 +91,5 @@ stdenv.mkDerivation (_old: {
     homepage = "https://www.opera.com/gx";
     license = lib.licenses.unfree;
     platforms = lib.platforms.linux;
-    maintainers = [
-      {
-        name = "Aziz Kurbonov";
-        github = "unazikx";
-        githubId = 189107707;
-        email = "xfalwa@gmail.com";
-      }
-    ];
   };
 })
