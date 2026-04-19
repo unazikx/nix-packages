@@ -1,31 +1,30 @@
 {
   python312Packages,
+  fetchurl,
   lib,
 }:
 
-# WARN:
-# requires configured rbw
-# NOT BW
-
-python312Packages.buildPythonApplication {
+python312Packages.buildPythonApplication (_old: {
   pname = baseNameOf ./.;
-  version = "local";
+  version = "git";
 
-  src = ./script.py;
+  src = fetchurl {
+    url = "https://raw.githubusercontent.com/Frestein/qute-translate-popup/5b9ee2c379ebff84e5b69d5a81dc3c3335d10871/qute-translate-popup";
+    sha256 = "sha256-VWIxZ+48qKYkRnOKxG4hTjHfrNHQC/KCfiHr0LgRZSw=";
+  };
+
   dontUnpack = true;
-
-  propagatedBuildInputs = [ python312Packages.python ];
 
   format = "other";
 
   installPhase = ''
-    install -Dm755 $src $out/bin/rbw-qutebrowser
+    install -Dm755 $src $out/bin/translator
   '';
 
   meta = {
-    description = "Fill logins via rbw from qutebrowser";
-    homepage = "https://gist.github.com/azikz/46ae13e0ea722203a13e318c871bb349";
-    license = lib.licenses.wtfpl;
+    description = "Userscript for selected text translation";
+    homepage = "https://github.com/Frestein/qute-translate-popup";
+    license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
     maintainers = with lib.maintainers; [
       {
@@ -35,6 +34,6 @@ python312Packages.buildPythonApplication {
         email = "xfalwa@gmail.com";
       }
     ];
-    mainProgram = "rbw-qutebrowser";
+    mainProgram = "translator";
   };
-}
+})
