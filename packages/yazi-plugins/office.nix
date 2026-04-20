@@ -9,15 +9,15 @@ yaziPlugins.mkYaziPlugin {
   version = "git";
 
   src = fetchFromGitHub {
-    owner = "macydnah";
+    owner = "cwelsys";
     repo = "office.yazi";
-    rev = "41ebef8be9dded98b5179e8af65be71b30a1ac4d";
-    hash = "sha256-QFto48D+Z8qHl7LHoDDprvr5mIJY8E7j37cUpRjKdNk=";
+    rev = "a5db2324cfd09e4ad48a4ac9ee5ea263557f84d6";
+    hash = "sha256-x8DXFLS+G6BLQRDJW6pfUCVb81b1IX6LNNii2B8V4bM=";
   };
 
   meta = {
     description = "Documents previewer plugin, using libreoffice";
-    homepage = "https://github.com/macydnah/office.yazi";
+    homepage = "https://github.com/cwelsys/office.yazi";
     license = lib.licenses.mit;
   };
 }
