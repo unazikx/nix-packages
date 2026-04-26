@@ -16,9 +16,9 @@ python312Packages.buildPythonApplication (_old: {
   '';
 
   meta = {
-    description = "Watch movies/series from rezka in terminal";
+    description = "Fetches firefox addons to nix file";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
-    mainProgram = "rezka-fzf";
+    mainProgram = "firefox-fetch-addons";
   };
 })
