@@ -23,15 +23,18 @@ jobs:
         run: |
           FLAKE_DIR=$(dirname $(find . -name "flake.nix" -not -path "*/node_modules/*" | head -1))
           echo "dir=$FLAKE_DIR" >> $GITHUB_OUTPUT
-      - name: Build firefox-fetch-addons
-        working-directory: ${{ steps.flake-dir.outputs.dir }}
-        run: nix build .#firefox-addons-fetcher
       - name: Run firefox-fetch-addons
         working-directory: ${{ steps.flake-dir.outputs.dir }}
         run: |
-          ./result/bin/firefox-fetch-addons \
+          nix run .#firefox-addons-fetcher -- \
             packages/firefox-addons/input.json \
             -o packages/firefox-addons/output.nix
+      - name: Run helium-fetch-addons
+        working-directory: ${{ steps.flake-dir.outputs.dir }}
+        run: |
+          nix run .#helium-addons-fetcher -- \
+            --extensions packages/helium-addons/input.json \
+            > packages/helium-addons/output.nix.hidden
       - name: Run updater
         working-directory: ${{ steps.flake-dir.outputs.dir }}
         run: nix run .#updater

@@ -1,0 +1,14 @@
+{
+  ublock-origin = {
+    id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";
+    hash = "sha256-FIbmYVj8cmXce7Vq4h7d2nOjmk4RkCnABmC4y5NDyGk=";
+  };
+  bitwarden-password-manager = {
+    id = "nngceckbapebfimnlniiiahkandclblb";
+    hash = "sha256-XOVs2Tvay8hQ13SHz+728BDu2mMyQ0JxUuUI6FZ1NaM=";
+  };
+  darkreader = {
+    id = "eimadpbcbfnmbkopoojfekhnkhdbieeh";
+    hash = "sha256-+lgx3sG0K4lEvhjidQZNT6DPzXO0zrphaAgQDCtPDw8=";
+  };
+}
