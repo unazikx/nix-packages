@@ -28,6 +28,7 @@ python312Packages.buildPythonPackage (_old: {
 
   meta = {
     description = "Unofficial Python library for parsing content from HDRezka";
+    homepage = "https://github.com/SuperZombi/HdRezkaApi";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
   };

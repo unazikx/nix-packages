@@ -5,6 +5,7 @@
   icu,
   openssl,
   zlib,
+  lib,
 }:
 
 appimageTools.wrapType2 rec {
@@ -22,4 +23,10 @@ appimageTools.wrapType2 rec {
     openssl
     zlib
   ];
+
+  description = "Shows battery level on hyprlock screen";
+  homepage = "https://gitlab.com/ntgn/helium-flake/-/blob/main/README.md?ref_type=heads#obtaining-extensions";
+  license = lib.licenses.wtfpl;
+  platforms = [ "x86_64-linux" ];
+  mainProgram = "helium-prefetcher";
 }
