@@ -8,7 +8,7 @@
 
 buildGoModule (_old: {
   pname = "capes";
-  version = "git";
+  version = "1.0.0";
 
   src = fetchFromGitHub {
     owner = "dorochadev";
