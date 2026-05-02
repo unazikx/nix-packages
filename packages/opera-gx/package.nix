@@ -29,7 +29,7 @@
 }:
 
 stdenv.mkDerivation (_old: {
-  pname = "opera-gx";
+  pname = baseNameOf ./.;
   version = "128.0.5807.97";
 
   src = fetchurl {

@@ -11,7 +11,7 @@
 }:
 
 buildGoModule (_old: {
-  pname = "cliamp";
+  pname = baseNameOf ./.;
   version = "1.39.0";
 
   src = fetchFromGitHub {

@@ -5,7 +5,7 @@
 }:
 
 python312Packages.buildPythonApplication (_old: {
-  pname = "uvicorn";
+  pname = baseNameOf ./.;
   version = "0.46.0";
   pyproject = true;
 

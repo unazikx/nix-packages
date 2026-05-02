@@ -5,7 +5,7 @@
 }:
 
 rustPlatform.buildRustPackage {
-  pname = "niri-sidebar";
+  pname = baseNameOf ./.;
   version = "0.3.1";
 
   src = fetchFromGitHub {

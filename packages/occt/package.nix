@@ -26,7 +26,7 @@
 }:
 
 stdenv.mkDerivation (_old: {
-  pname = "occt";
+  pname = baseNameOf ./.;
   version = "15.0.13";
 
   src = fetchurl {

@@ -21,7 +21,7 @@
 }:
 
 python312Packages.buildPythonApplication {
-  pname = "portablemc-wrapper";
+  pname = baseNameOf ./.;
   version = "local";
 
   src = ./script.py;

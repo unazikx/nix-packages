@@ -5,7 +5,7 @@
 }:
 
 buildGoModule (_old: {
-  pname = "gitmal";
+  pname = baseNameOf ./.;
   version = "1.0.2";
 
   src = fetchFromGitHub {

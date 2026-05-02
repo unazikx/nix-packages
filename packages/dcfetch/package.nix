@@ -1,7 +1,6 @@
 {
   stdenv,
   fetchFromGitHub,
-  lib,
 }:
 
 stdenv.mkDerivation {

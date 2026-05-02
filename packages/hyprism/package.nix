@@ -9,7 +9,7 @@
 }:
 
 appimageTools.wrapType2 rec {
-  pname = "hyprism";
+  pname = baseNameOf ./.;
   version = "3.0.2";
 
   src = fetchurl {

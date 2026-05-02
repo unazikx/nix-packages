@@ -1,13 +1,12 @@
 {
   buildGoModule,
   fetchFromGitHub,
-  pkg-config,
   imagemagick,
   lib,
 }:
 
 buildGoModule (_old: {
-  pname = "capes";
+  pname = baseNameOf ./.;
   version = "1.0.0";
 
   src = fetchFromGitHub {
@@ -18,8 +17,6 @@ buildGoModule (_old: {
   };
 
   vendorHash = "sha256-4vgmSwtJdtvdP/6qckBORr+eTImcGAaFAKPI4Np9k00=";
-
-  # nativeBuildInputs = [ pkg-config ];
 
   buildInputs = [
     imagemagick

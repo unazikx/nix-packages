@@ -5,7 +5,7 @@
 }:
 
 python312Packages.buildPythonApplication (_old: {
-  pname = "toml2nix";
+  pname = baseNameOf ./.;
   version = "1.0.0";
 
   src = fetchFromGitHub {
