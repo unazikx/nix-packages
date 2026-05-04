@@ -12,7 +12,7 @@
 
 buildGoModule (_old: {
   pname = baseNameOf ./.;
-  version = "1.39.0";
+  version = "1.40.0";
 
   src = fetchFromGitHub {
     owner = "bjarneo";

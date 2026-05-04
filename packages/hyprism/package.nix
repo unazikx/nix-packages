@@ -10,11 +10,11 @@
 
 appimageTools.wrapType2 rec {
   pname = baseNameOf ./.;
-  version = "3.0.2";
+  version = "3.0.3";
 
   src = fetchurl {
     url = "https://github.com/hyprismteam/HyPrism/releases/download/v${version}/HyPrism-linux-x86_64-${version}.AppImage";
-    hash = "sha256-mTZGwZuugn4U5MDXbcT/pyUHSnCT+KUSAGCxUxXgYpE=";
+    hash = "sha256-sjcBEY48CB0CH6ETiBDUd3/VEdrQ4BkjRsx1H4ja7QE=";
   };
 
   extraPkgs = _: [
