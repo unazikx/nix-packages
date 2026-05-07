@@ -20,8 +20,11 @@ def hash_file(path):
 
 def hash_url(url):
     import urllib.request
-
-    with urllib.request.urlopen(url) as r:
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0"}
+    )
+    with urllib.request.urlopen(req) as r:
         data = r.read()
     h = hashlib.sha256(data).digest()
     print("sha256-" + base64.b64encode(h).decode())
