@@ -201,10 +201,10 @@
   };
   "steam-database" = buildFirefoxXpiAddon {
     pname = "steam-database";
-    version = "4.33";
+    version = "4.34";
     addonId = "firefox-extension@steamdb.info";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4704123/steam_database-4.33.xpi";
-    sha256 = "7a7a0692e9306ec1b4eaf21bb4acbaf0d0b1f6a6e9acdca40903df03fd91f74f";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4803730/steam_database-4.34.xpi";
+    sha256 = "b811d2c8c243ccf58579699e8153b1e24c3acaeac13c26e97daa232c5b0b4bb2";
     meta = with lib; {
       homepage = "https://steamdb.info/";
       description = "Adds SteamDB links and new features on the Steam store and community. View lowest game prices and stats.";
@@ -246,11 +246,11 @@
           "https://steamcommunity.com/id/*/gamecards/*"
           "https://steamcommunity.com/profiles/*/gamecards/*"
           "https://steamcommunity.com/market/multibuy*"
-          "https://steamcommunity.com/market/*"
           "https://steamcommunity.com/games/*"
           "https://steamcommunity.com/sharedfiles/*"
           "https://steamcommunity.com/workshop/*"
           "https://steamcommunity.com/linkfilter/*"
+          "https://steamcommunity.com/market/*"
           "https://steamcommunity.com/tradingcards/boostercreator*"
         ];
       platforms = platforms.all;
@@ -258,10 +258,10 @@
   };
   "styl-us" = buildFirefoxXpiAddon {
     pname = "styl-us";
-    version = "2.3.23";
+    version = "2.3.24";
     addonId = "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4802647/styl_us-2.3.23.xpi";
-    sha256 = "94ef5476bb0efc61d9198541e119f5b6f3d25c7a9e17e0148581baf86011b82b";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4813027/styl_us-2.3.24.xpi";
+    sha256 = "2e038b38ccd88d240f2a9e68174fc39543627bc7599c6dd0a2c90f769b11dbe4";
     meta = with lib; {
       homepage = "https://add0n.com/stylus.html";
       description = "Redesign your favorite websites with Stylus, an actively developed and community driven userstyles manager. Easily install custom themes from popular online repositories, or create, edit, and manage your own personalized CSS stylesheets.";
