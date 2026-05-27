@@ -48,6 +48,7 @@ any() {
 NOTIFY=no
 CURSOR=
 WAIT=no
+SLURP_ARGS=
 
 getTargetDirectory() {
   test -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" &&
@@ -78,6 +79,21 @@ parseArgs() {
       fi
       shift
       ;;
+    -b | --slurp-background)
+      shift
+      SLURP_ARGS="$SLURP_ARGS -b $1"
+      shift
+      ;;
+    -S | --slurp-color)
+      shift
+      SLURP_ARGS="$SLURP_ARGS -c $1"
+      shift
+      ;;
+    -B | --slurp-border)
+      shift
+      SLURP_ARGS="$SLURP_ARGS -B $1"
+      shift
+      ;;
     *)                                      # Treat anything else as a positional argument
       POSITIONAL_ARGS="$POSITIONAL_ARGS $1" # Add positional argument to the string
       shift
@@ -99,7 +115,7 @@ parseArgs() {
 
 printUsageMsg() {
   echo "Usage:"
-  echo "  grimshot [--notify] [--cursor] [--wait N] (copy|save) [active|screen|output|area|window|anything] [FILE|-]"
+  echo "  grimshot [--notify] [--cursor] [--wait N] [--slurp-background COLOR] [--slurp-color COLOR] [--slurp-border COLOR] (copy|save) [active|screen|output|area|window|anything] [FILE|-]"
   echo "  grimshot check"
   echo "  grimshot usage"
   echo ""
@@ -117,6 +133,14 @@ printUsageMsg() {
   echo "  area: Manually select a region."
   echo "  window: Manually select a window."
   echo "  anything: Manually select an area, window, or output."
+  echo ""
+  echo "Slurp color options (RRGGBBAA hex format):"
+  echo "  -b, --slurp-background COLOR  Background overlay color (e.g. 00000080)"
+  echo "  -S, --slurp-color COLOR       Selection border color (e.g. FF0000FF)"
+  echo "  -B, --slurp-border COLOR      Unselected area border color (e.g. FFFFFFFF)"
+  echo ""
+  echo "Slurp colors can also be set via environment variables:"
+  echo "  GRIMSHOT_SLURP_BACKGROUND, GRIMSHOT_SLURP_COLOR, GRIMSHOT_SLURP_BORDER"
   exit
 }
 
@@ -214,8 +238,16 @@ addPadding() {
   echo "$X,$Y ${W}x${H}"
 }
 
+buildSlurpArgs() {
+  args="$SLURP_ARGS"
+  [ -z "$(echo "$args" | grep -- '-b')" ] && [ -n "$GRIMSHOT_SLURP_BACKGROUND" ] && args="$args -b $GRIMSHOT_SLURP_BACKGROUND"
+  [ -z "$(echo "$args" | grep -- '-c')" ] && [ -n "$GRIMSHOT_SLURP_COLOR" ]      && args="$args -c $GRIMSHOT_SLURP_COLOR"
+  [ -z "$(echo "$args" | grep -- '-B')" ] && [ -n "$GRIMSHOT_SLURP_BORDER" ]     && args="$args -B $GRIMSHOT_SLURP_BORDER"
+  echo "$args"
+}
+
 selectArea() {
-  GEOM=$(slurp -d)
+  GEOM=$(slurp -d $(buildSlurpArgs))
   geomIsEmpty='[ -z "$GEOM" ]'
   when "$geomIsEmpty" "exit 1"
   WHAT="Area"
@@ -240,7 +272,7 @@ selectOutput() {
 }
 
 selectWindow() {
-  GEOM=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp -r)
+  GEOM=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp -r $(buildSlurpArgs))
   geomIsEmpty='[ -z "$GEOM" ]'
   when "$geomIsEmpty" "exit 1"
   GEOM=$(addPadding "$GEOM" 10)
@@ -248,7 +280,7 @@ selectWindow() {
 }
 
 selectAnything() {
-  GEOM=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp -o)
+  GEOM=$(swaymsg -t get_tree | jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | slurp -o $(buildSlurpArgs))
   geomIsEmpty='[ -z "$GEOM" ]'
   when "$geomIsEmpty" "exit 1"
   GEOM=$(addPadding "$GEOM" 10)
