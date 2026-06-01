@@ -1,16 +1,17 @@
 [
-	{ "slug": "torrserver-adder" },
-	{ "slug": "libredirect" },
-	{ "slug": "youtube-addon" },
-	{ "slug": "redirectnixwiki" },
-	{ "slug": "traduzir-paginas-web" },
-	{ "slug": "keepassxc-browser" },
 	{ "slug": "bitwarden-password-manager" },
-	{ "slug": "ublock-origin" },
+	{ "slug": "darkreader" },
+	{ "slug": "ipfs-companion" },
+	{ "slug": "keepassxc-browser" },
+	{ "slug": "libredirect" },
+	{ "slug": "mal-sync" },
+	{ "slug": "protondb-for-steam" },
+	{ "slug": "redirectnixwiki" },
+	{ "slug": "sponsorblock" },
 	{ "slug": "steam-database" },
 	{ "slug": "styl-us" },
-	{ "slug": "protondb-for-steam" },
-	{ "slug": "darkreader" },
-	{ "slug": "sponsorblock" },
-	{ "slug": "mal-sync" }
+	{ "slug": "torrserver-adder" },
+	{ "slug": "traduzir-paginas-web" },
+	{ "slug": "ublock-origin" },
+	{ "slug": "youtube-addon" }
 ]

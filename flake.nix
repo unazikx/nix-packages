@@ -45,20 +45,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
-
-    treefmt-nix = {
-      type = "github";
-      owner = "numtide";
-      repo = "treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    emmanuelrosa-nix = {
-      type = "github";
-      owner = "emmanuelrosa";
-      repo = "erosanix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -77,7 +63,6 @@
 
         imports = [
           inputs.pkgs-by-name.flakeModule
-          inputs.treefmt-nix.flakeModule
         ];
 
         perSystem =
@@ -92,14 +77,14 @@
               config.allowUnfree = true;
               overlays = [
                 inputs.nur.overlays.default
-                (_f: _p: {
-                  inherit (inputs.emmanuelrosa-nix.lib.${system})
-                    mkWindowsApp
-                    mkWindowsAppNoCC
-                    copyDesktopIcons
-                    makeDesktopIcon
-                    ;
-                })
+                # (_f: _p: {
+                #   inherit (inputs.emmanuelrosa-nix.lib.${system})
+                #     mkWindowsApp
+                #     mkWindowsAppNoCC
+                #     copyDesktopIcons
+                #     makeDesktopIcon
+                #     ;
+                # })
               ];
             };
           in
@@ -113,38 +98,6 @@
               default = updater;
               updater = pkgs.callPackage ./updater.nix {
                 inherit self';
-              };
-            };
-
-            treefmt = {
-              programs = {
-                black.enable = true;
-
-                deadnix = {
-                  enable = true;
-                  excludes = [ "packages/firefox-addons/output.nix" ];
-                };
-
-                nixfmt = {
-                  enable = true;
-                  excludes = [ "packages/firefox-addons/output.nix" ];
-                };
-
-                # mdformat = {
-                #   enable = true;
-                #   plugins =
-                #     _ps:
-                #     lib.attrValues {
-                #       inherit (pkgs.python312Packages)
-                #         mdformat-beautysh
-                #         ;
-
-                #       inherit (config.packages)
-                #         mdformat-black
-                #         mdformat-config
-                #         ;
-                #     };
-                # };
               };
             };
           };
