@@ -7,7 +7,7 @@
 
 stdenv.mkDerivation (_old: {
   pname = baseNameOf ./.;
-  version = "MatriX.141.1";
+  version = "MatriX.141.4";
 
   src = fetchurl {
     url = "https://github.com/YouROK/TorrServer/releases/download/MatriX.${_old.version}/TorrServer-linux-amd64";

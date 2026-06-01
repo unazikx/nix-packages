@@ -5,7 +5,7 @@
   };
   bitwarden-password-manager = {
     id = "nngceckbapebfimnlniiiahkandclblb";
-    hash = "sha256-lhjupdYi1F+MlReNjN/JFGguUagSaU2onfJ1HWEwBKc=";
+    hash = "sha256-iZklaK0xUTCfpc4E6goou1gvamo26BTvagllajeVjtw=";
   };
   darkreader = {
     id = "eimadpbcbfnmbkopoojfekhnkhdbieeh";

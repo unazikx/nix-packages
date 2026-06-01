@@ -12,13 +12,13 @@
 
 buildGoModule (_old: {
   pname = baseNameOf ./.;
-  version = "1.54.0";
+  version = "1.56.0";
 
   src = fetchFromGitHub {
     owner = "bjarneo";
     repo = "cliamp";
     tag = "v${_old.version}";
-    hash = "sha256-mzamCRByblAkMJrEmA5YTGSsyXu1zNbYWInLcxTjr8w=";
+    hash = "sha256-07hKE13eX6IWo77mMbgvPgJZjymfsGn9xMN7XIVIB1g=";
   };
 
   vendorHash = "sha256-A2Ygc1a9e2flZzaNAEXvr8Ui1cE89TxBfUNALmDzIo0=";
