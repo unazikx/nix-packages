@@ -1,102 +1,79 @@
 { buildFirefoxXpiAddon, lib }:
 {
-  "torrserver-adder" = buildFirefoxXpiAddon {
-    pname = "torrserver-adder";
-    version = "2.0.5";
-    addonId = "84z74tXJKt8OUrTD@TSA";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4264581/torrserver_adder-2.0.5.xpi";
-    sha256 = "6783c13fe423c14fbf9dd23ea3232167dc78eeb298594ab802aa9a7b094fb365";
+  "bitwarden-password-manager" = buildFirefoxXpiAddon {
+    pname = "bitwarden-password-manager";
+    version = "2026.4.0";
+    addonId = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4796063/bitwarden_password_manager-2026.4.0.xpi";
+    sha256 = "ccbdf6c3a11c8655d4fe9bdfcf5f16c4c9ff2d8732fadbb85396a2123274ae10";
     meta = with lib; {
-      homepage = "https://github.com/Noperkot/TorrServerAdder";
-      description = "Allows you to add torrents to TorrServer and play them using the system media player";
+      homepage = "https://bitwarden.com";
+      description = "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.";
       license = licenses.unfree;
       mozPermissions = [
-          "http://*/*"
-          "https://*/*"
-          "contextMenus"
-          "downloads"
-          "storage"
-          "tabs"
-          "webRequest"
-          "webRequestBlocking"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "libredirect" = buildFirefoxXpiAddon {
-    pname = "libredirect";
-    version = "3.3.0";
-    addonId = "7esoorv3@alefvanoon.anonaddy.me";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4734268/libredirect-3.3.0.xpi";
-    sha256 = "1c91739ae52c6eb8522f0efb38397c3d5e85d961b3999f3c5d60f89db447877d";
-    meta = with lib; {
-      homepage = "https://libredirect.github.io";
-      description = "Redirects YouTube, Twitter, TikTok... requests to alternative privacy friendly frontends.";
-      license = licenses.unfree;
-      mozPermissions = [
-          "webRequest"
-          "webRequestBlocking"
-          "storage"
+          "<all_urls>"
+          "*://*/*"
+          "alarms"
+          "clipboardRead"
           "clipboardWrite"
           "contextMenus"
-          "<all_urls>"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "youtube-addon" = buildFirefoxXpiAddon {
-    pname = "youtube-addon";
-    version = "4.2026";
-    addonId = "{3c6bf0cc-3ae2-42fb-9993-0d33104fdcaf}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4723468/youtube_addon-4.2026.xpi";
-    sha256 = "fdd964bb8b157e1cc7983ea1b5ca4dab4fe56690098eb23ba0c4726381766535";
-    meta = with lib; {
-      homepage = "https://github.com/code4charity/YouTube-Extension/";
-      description = "Youtube Extension. Powerful but lightweight. Enrich your Youtube and content selection. Make YouTube tidy and smart! (Layout, Filters, Shortcuts, Playlist)";
-      license = licenses.unfree;
-      mozPermissions = [
-          "contextMenus"
+          "idle"
           "storage"
+          "tabs"
           "unlimitedStorage"
-          "https://www.youtube.com/*"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "redirectnixwiki" = buildFirefoxXpiAddon {
-    pname = "redirectnixwiki";
-    version = "1.0";
-    addonId = "redirect-nix-wiki@undesided.me";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4373121/redirectnixwiki-1.0.xpi";
-    sha256 = "ca09df5c8bf96d6ed34ee8753decef188099ab77c2490f86ee172545236fd03f";
-    meta = with lib; {
-      homepage = "https://gitlab.com/utzuro/browser-plugins/-/tree/main/redirectNixWiki";
-      description = "Redirects old \"nixos.wiki\" to the official \"wiki.nixos.org\".";
-      license = licenses.mit;
-      mozPermissions = [
+          "webNavigation"
           "webRequest"
           "webRequestBlocking"
-          "*://nixos.wiki/*"
+          "notifications"
+          "file:///*"
         ];
       platforms = platforms.all;
     };
   };
-  "traduzir-paginas-web" = buildFirefoxXpiAddon {
-    pname = "traduzir-paginas-web";
-    version = "10.1.1.1";
-    addonId = "{036a55b4-5e72-4d05-a06c-cba2dfcc134a}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4455681/traduzir_paginas_web-10.1.1.1.xpi";
-    sha256 = "dc94a7efac63468f7d34a74bedf5c8b360a67c99d213bb5b1a1d55d911797782";
+  "darkreader" = buildFirefoxXpiAddon {
+    pname = "darkreader";
+    version = "4.9.125";
+    addonId = "addon@darkreader.org";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4783321/darkreader-4.9.125.xpi";
+    sha256 = "21a9a18bc873e09b9b10f841a559807ce9e90738674c7eddb9f639c0663eaf28";
     meta = with lib; {
-      description = "Translate your page in real time using Google, Bing or Yandex. It is not necessary to open new tabs.";
+      homepage = "https://darkreader.org/";
+      description = "Dark mode for every website. Take care of your eyes, use dark theme for night and daily browsing.";
+      license = licenses.mit;
+      mozPermissions = [
+          "alarms"
+          "contextMenus"
+          "storage"
+          "tabs"
+          "theme"
+          "<all_urls>"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "ipfs-companion" = buildFirefoxXpiAddon {
+    pname = "ipfs-companion";
+    version = "3.3.0";
+    addonId = "ipfs-firefox-addon@lidel.org";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4587033/ipfs_companion-3.3.0.xpi";
+    sha256 = "9e4de48314886a9d6b69bfb1c4903802669dbf50406da6c7a14949ceec788a1e";
+    meta = with lib; {
+      homepage = "https://github.com/ipfs/ipfs-companion";
+      description = "Harness the power of IPFS in your browser";
       license = licenses.unfree;
       mozPermissions = [
-          "<all_urls>"
+          "alarms"
+          "idle"
+          "tabs"
+          "notifications"
+          "proxy"
           "storage"
-          "activeTab"
+          "unlimitedStorage"
           "contextMenus"
+          "clipboardWrite"
+          "webNavigation"
           "webRequest"
-          "https://www.deepl.com/*/translator*"
+          "webRequestBlocking"
         ];
       platforms = platforms.all;
     };
@@ -131,214 +108,23 @@
       platforms = platforms.all;
     };
   };
-  "bitwarden-password-manager" = buildFirefoxXpiAddon {
-    pname = "bitwarden-password-manager";
-    version = "2026.4.0";
-    addonId = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4796063/bitwarden_password_manager-2026.4.0.xpi";
-    sha256 = "ccbdf6c3a11c8655d4fe9bdfcf5f16c4c9ff2d8732fadbb85396a2123274ae10";
+  "libredirect" = buildFirefoxXpiAddon {
+    pname = "libredirect";
+    version = "3.3.0";
+    addonId = "7esoorv3@alefvanoon.anonaddy.me";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4734268/libredirect-3.3.0.xpi";
+    sha256 = "1c91739ae52c6eb8522f0efb38397c3d5e85d961b3999f3c5d60f89db447877d";
     meta = with lib; {
-      homepage = "https://bitwarden.com";
-      description = "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.";
+      homepage = "https://libredirect.github.io";
+      description = "Redirects YouTube, Twitter, TikTok... requests to alternative privacy friendly frontends.";
       license = licenses.unfree;
       mozPermissions = [
-          "<all_urls>"
-          "*://*/*"
-          "alarms"
-          "clipboardRead"
+          "webRequest"
+          "webRequestBlocking"
+          "storage"
           "clipboardWrite"
           "contextMenus"
-          "idle"
-          "storage"
-          "tabs"
-          "unlimitedStorage"
-          "webNavigation"
-          "webRequest"
-          "webRequestBlocking"
-          "notifications"
-          "file:///*"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "ublock-origin" = buildFirefoxXpiAddon {
-    pname = "ublock-origin";
-    version = "1.71.0";
-    addonId = "uBlock0@raymondhill.net";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4814095/ublock_origin-1.71.0.xpi";
-    sha256 = "47f788a1fc2c014830b30bb0ef9588615701b98c5265fb19b8cf4ba779849feb";
-    meta = with lib; {
-      homepage = "https://github.com/gorhill/uBlock#ublock-origin";
-      description = "Finally, an efficient wide-spectrum content blocker. Easy on CPU and memory.";
-      license = licenses.unfree;
-      mozPermissions = [
-          "alarms"
-          "dns"
-          "menus"
-          "privacy"
-          "storage"
-          "tabs"
-          "unlimitedStorage"
-          "webNavigation"
-          "webRequest"
-          "webRequestBlocking"
           "<all_urls>"
-          "http://*/*"
-          "https://*/*"
-          "file://*/*"
-          "https://easylist.to/*"
-          "https://*.fanboy.co.nz/*"
-          "https://filterlists.com/*"
-          "https://forums.lanik.us/*"
-          "https://github.com/*"
-          "https://*.github.io/*"
-          "https://github.com/uBlockOrigin/*"
-          "https://ublockorigin.github.io/*"
-          "https://*.reddit.com/r/uBlockOrigin/*"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "steam-database" = buildFirefoxXpiAddon {
-    pname = "steam-database";
-    version = "4.34";
-    addonId = "firefox-extension@steamdb.info";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4803730/steam_database-4.34.xpi";
-    sha256 = "b811d2c8c243ccf58579699e8153b1e24c3acaeac13c26e97daa232c5b0b4bb2";
-    meta = with lib; {
-      homepage = "https://steamdb.info/";
-      description = "Adds SteamDB links and new features on the Steam store and community. View lowest game prices and stats.";
-      license = licenses.bsd3;
-      mozPermissions = [
-          "storage"
-          "https://steamdb.info/*"
-          "https://store.steampowered.com/*"
-          "https://steamcommunity.com/*"
-          "https://store.steampowered.com/app/*"
-          "https://store.steampowered.com/news/app/*"
-          "https://store.steampowered.com/account/licenses*"
-          "https://store.steampowered.com/account/registerkey*"
-          "https://store.steampowered.com/sub/*"
-          "https://store.steampowered.com/bundle/*"
-          "https://store.steampowered.com/widget/*"
-          "https://store.steampowered.com/app/*/agecheck"
-          "https://store.steampowered.com/agecheck/*"
-          "https://store.steampowered.com/explore*"
-          "https://steamcommunity.com/app/*"
-          "https://steamcommunity.com/sharedfiles/filedetails*"
-          "https://steamcommunity.com/workshop/filedetails*"
-          "https://steamcommunity.com/workshop/browse*"
-          "https://steamcommunity.com/workshop/discussions*"
-          "https://steamcommunity.com/id/*"
-          "https://steamcommunity.com/profiles/*"
-          "https://steamcommunity.com/id/*/inventory*"
-          "https://steamcommunity.com/profiles/*/inventory*"
-          "https://steamcommunity.com/id/*/stats*"
-          "https://steamcommunity.com/profiles/*/stats*"
-          "https://steamcommunity.com/id/*/stats/CSGO*"
-          "https://steamcommunity.com/profiles/*/stats/CSGO*"
-          "https://steamcommunity.com/stats/*/achievements*"
-          "https://steamcommunity.com/tradeoffer/*"
-          "https://steamcommunity.com/id/*/recommended/*"
-          "https://steamcommunity.com/profiles/*/recommended/*"
-          "https://steamcommunity.com/id/*/badges*"
-          "https://steamcommunity.com/profiles/*/badges*"
-          "https://steamcommunity.com/id/*/gamecards/*"
-          "https://steamcommunity.com/profiles/*/gamecards/*"
-          "https://steamcommunity.com/market/multibuy*"
-          "https://steamcommunity.com/games/*"
-          "https://steamcommunity.com/sharedfiles/*"
-          "https://steamcommunity.com/workshop/*"
-          "https://steamcommunity.com/linkfilter/*"
-          "https://steamcommunity.com/market/*"
-          "https://steamcommunity.com/tradingcards/boostercreator*"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "styl-us" = buildFirefoxXpiAddon {
-    pname = "styl-us";
-    version = "2.3.29.24";
-    addonId = "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4827127/styl_us-2.3.29.24.xpi";
-    sha256 = "4aa7112f4919e91ace0d367179f39882d406e087d9db8ff3a5fbe1d1294997a3";
-    meta = with lib; {
-      homepage = "https://add0n.com/stylus.html";
-      description = "Redesign your favorite websites with Stylus, an actively developed and community driven userstyles manager. Easily install custom themes from popular online repositories, or create, edit, and manage your own personalized CSS stylesheets.";
-      license = licenses.unfree;
-      mozPermissions = [
-          "alarms"
-          "contextMenus"
-          "storage"
-          "tabs"
-          "unlimitedStorage"
-          "webNavigation"
-          "webRequest"
-          "webRequestBlocking"
-          "<all_urls>"
-          "https://userstyles.org/*"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "protondb-for-steam" = buildFirefoxXpiAddon {
-    pname = "protondb-for-steam";
-    version = "2.3.0";
-    addonId = "{30280527-c46c-4e03-bb16-2e3ed94fa57c}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4490230/protondb_for_steam-2.3.0.xpi";
-    sha256 = "e5ab8d594cd71c7a345a6694620ad9c4a3abb97161a191b72484f5b934ba96c5";
-    meta = with lib; {
-      homepage = "https://github.com/tryton-vanmeer/ProtonDB-for-Steam#protondb-for-steam";
-      description = "Shows ratings from protondb.com on Steam";
-      license = licenses.unfree;
-      mozPermissions = [
-          "https://www.protondb.com/*"
-          "https://store.steampowered.com/app/*"
-          "https://store.steampowered.com/wishlist/*"
-          "https://steamcommunity.com/id/*/games"
-          "https://steamcommunity.com/id/*/games?tab=*"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "darkreader" = buildFirefoxXpiAddon {
-    pname = "darkreader";
-    version = "4.9.125";
-    addonId = "addon@darkreader.org";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4783321/darkreader-4.9.125.xpi";
-    sha256 = "21a9a18bc873e09b9b10f841a559807ce9e90738674c7eddb9f639c0663eaf28";
-    meta = with lib; {
-      homepage = "https://darkreader.org/";
-      description = "Dark mode for every website. Take care of your eyes, use dark theme for night and daily browsing.";
-      license = licenses.mit;
-      mozPermissions = [
-          "alarms"
-          "contextMenus"
-          "storage"
-          "tabs"
-          "theme"
-          "<all_urls>"
-        ];
-      platforms = platforms.all;
-    };
-  };
-  "sponsorblock" = buildFirefoxXpiAddon {
-    pname = "sponsorblock";
-    version = "6.1.5";
-    addonId = "sponsorBlocker@ajay.app";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4773757/sponsorblock-6.1.5.xpi";
-    sha256 = "d8ec229aecb0b78e307a86d436496891b755f874c24c0f7324551c7ffd1b2e14";
-    meta = with lib; {
-      homepage = "https://sponsor.ajay.app";
-      description = "Easily skip YouTube video sponsors. When you visit a YouTube video, the extension will check the database for reported sponsors and automatically skip known sponsors. You can also report sponsors in videos. Other browsers: https://sponsor.ajay.app";
-      license = licenses.unfree;
-      mozPermissions = [
-          "storage"
-          "scripting"
-          "unlimitedStorage"
-          "https://sponsor.ajay.app/*"
-          "https://*.youtube.com/*"
-          "https://www.youtube-nocookie.com/embed/*"
         ];
       platforms = platforms.all;
     };
@@ -1088,6 +874,247 @@
           "*://yuguaab.com/*"
           "*://allanime.day/*"
           "*://allanime.uns.bio/*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "protondb-for-steam" = buildFirefoxXpiAddon {
+    pname = "protondb-for-steam";
+    version = "2.3.0";
+    addonId = "{30280527-c46c-4e03-bb16-2e3ed94fa57c}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4490230/protondb_for_steam-2.3.0.xpi";
+    sha256 = "e5ab8d594cd71c7a345a6694620ad9c4a3abb97161a191b72484f5b934ba96c5";
+    meta = with lib; {
+      homepage = "https://github.com/tryton-vanmeer/ProtonDB-for-Steam#protondb-for-steam";
+      description = "Shows ratings from protondb.com on Steam";
+      license = licenses.unfree;
+      mozPermissions = [
+          "https://www.protondb.com/*"
+          "https://store.steampowered.com/app/*"
+          "https://store.steampowered.com/wishlist/*"
+          "https://steamcommunity.com/id/*/games"
+          "https://steamcommunity.com/id/*/games?tab=*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "redirectnixwiki" = buildFirefoxXpiAddon {
+    pname = "redirectnixwiki";
+    version = "1.0";
+    addonId = "redirect-nix-wiki@undesided.me";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4373121/redirectnixwiki-1.0.xpi";
+    sha256 = "ca09df5c8bf96d6ed34ee8753decef188099ab77c2490f86ee172545236fd03f";
+    meta = with lib; {
+      homepage = "https://gitlab.com/utzuro/browser-plugins/-/tree/main/redirectNixWiki";
+      description = "Redirects old \"nixos.wiki\" to the official \"wiki.nixos.org\".";
+      license = licenses.mit;
+      mozPermissions = [
+          "webRequest"
+          "webRequestBlocking"
+          "*://nixos.wiki/*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "sponsorblock" = buildFirefoxXpiAddon {
+    pname = "sponsorblock";
+    version = "6.1.5";
+    addonId = "sponsorBlocker@ajay.app";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4773757/sponsorblock-6.1.5.xpi";
+    sha256 = "d8ec229aecb0b78e307a86d436496891b755f874c24c0f7324551c7ffd1b2e14";
+    meta = with lib; {
+      homepage = "https://sponsor.ajay.app";
+      description = "Easily skip YouTube video sponsors. When you visit a YouTube video, the extension will check the database for reported sponsors and automatically skip known sponsors. You can also report sponsors in videos. Other browsers: https://sponsor.ajay.app";
+      license = licenses.unfree;
+      mozPermissions = [
+          "storage"
+          "scripting"
+          "unlimitedStorage"
+          "https://sponsor.ajay.app/*"
+          "https://*.youtube.com/*"
+          "https://www.youtube-nocookie.com/embed/*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "steam-database" = buildFirefoxXpiAddon {
+    pname = "steam-database";
+    version = "4.34";
+    addonId = "firefox-extension@steamdb.info";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4803730/steam_database-4.34.xpi";
+    sha256 = "b811d2c8c243ccf58579699e8153b1e24c3acaeac13c26e97daa232c5b0b4bb2";
+    meta = with lib; {
+      homepage = "https://steamdb.info/";
+      description = "Adds SteamDB links and new features on the Steam store and community. View lowest game prices and stats.";
+      license = licenses.bsd3;
+      mozPermissions = [
+          "storage"
+          "https://steamdb.info/*"
+          "https://store.steampowered.com/*"
+          "https://steamcommunity.com/*"
+          "https://store.steampowered.com/app/*"
+          "https://store.steampowered.com/news/app/*"
+          "https://store.steampowered.com/account/licenses*"
+          "https://store.steampowered.com/account/registerkey*"
+          "https://store.steampowered.com/sub/*"
+          "https://store.steampowered.com/bundle/*"
+          "https://store.steampowered.com/widget/*"
+          "https://store.steampowered.com/app/*/agecheck"
+          "https://store.steampowered.com/agecheck/*"
+          "https://store.steampowered.com/explore*"
+          "https://steamcommunity.com/app/*"
+          "https://steamcommunity.com/sharedfiles/filedetails*"
+          "https://steamcommunity.com/workshop/filedetails*"
+          "https://steamcommunity.com/workshop/browse*"
+          "https://steamcommunity.com/workshop/discussions*"
+          "https://steamcommunity.com/id/*"
+          "https://steamcommunity.com/profiles/*"
+          "https://steamcommunity.com/id/*/inventory*"
+          "https://steamcommunity.com/profiles/*/inventory*"
+          "https://steamcommunity.com/id/*/stats*"
+          "https://steamcommunity.com/profiles/*/stats*"
+          "https://steamcommunity.com/id/*/stats/CSGO*"
+          "https://steamcommunity.com/profiles/*/stats/CSGO*"
+          "https://steamcommunity.com/stats/*/achievements*"
+          "https://steamcommunity.com/tradeoffer/*"
+          "https://steamcommunity.com/id/*/recommended/*"
+          "https://steamcommunity.com/profiles/*/recommended/*"
+          "https://steamcommunity.com/id/*/badges*"
+          "https://steamcommunity.com/profiles/*/badges*"
+          "https://steamcommunity.com/id/*/gamecards/*"
+          "https://steamcommunity.com/profiles/*/gamecards/*"
+          "https://steamcommunity.com/market/multibuy*"
+          "https://steamcommunity.com/games/*"
+          "https://steamcommunity.com/sharedfiles/*"
+          "https://steamcommunity.com/workshop/*"
+          "https://steamcommunity.com/linkfilter/*"
+          "https://steamcommunity.com/market/*"
+          "https://steamcommunity.com/tradingcards/boostercreator*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "styl-us" = buildFirefoxXpiAddon {
+    pname = "styl-us";
+    version = "2.3.29.24";
+    addonId = "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4827127/styl_us-2.3.29.24.xpi";
+    sha256 = "4aa7112f4919e91ace0d367179f39882d406e087d9db8ff3a5fbe1d1294997a3";
+    meta = with lib; {
+      homepage = "https://add0n.com/stylus.html";
+      description = "Redesign your favorite websites with Stylus, an actively developed and community driven userstyles manager. Easily install custom themes from popular online repositories, or create, edit, and manage your own personalized CSS stylesheets.";
+      license = licenses.unfree;
+      mozPermissions = [
+          "alarms"
+          "contextMenus"
+          "storage"
+          "tabs"
+          "unlimitedStorage"
+          "webNavigation"
+          "webRequest"
+          "webRequestBlocking"
+          "<all_urls>"
+          "https://userstyles.org/*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "torrserver-adder" = buildFirefoxXpiAddon {
+    pname = "torrserver-adder";
+    version = "2.0.5";
+    addonId = "84z74tXJKt8OUrTD@TSA";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4264581/torrserver_adder-2.0.5.xpi";
+    sha256 = "6783c13fe423c14fbf9dd23ea3232167dc78eeb298594ab802aa9a7b094fb365";
+    meta = with lib; {
+      homepage = "https://github.com/Noperkot/TorrServerAdder";
+      description = "Allows you to add torrents to TorrServer and play them using the system media player";
+      license = licenses.unfree;
+      mozPermissions = [
+          "http://*/*"
+          "https://*/*"
+          "contextMenus"
+          "downloads"
+          "storage"
+          "tabs"
+          "webRequest"
+          "webRequestBlocking"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "traduzir-paginas-web" = buildFirefoxXpiAddon {
+    pname = "traduzir-paginas-web";
+    version = "10.1.1.1";
+    addonId = "{036a55b4-5e72-4d05-a06c-cba2dfcc134a}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4455681/traduzir_paginas_web-10.1.1.1.xpi";
+    sha256 = "dc94a7efac63468f7d34a74bedf5c8b360a67c99d213bb5b1a1d55d911797782";
+    meta = with lib; {
+      description = "Translate your page in real time using Google, Bing or Yandex. It is not necessary to open new tabs.";
+      license = licenses.unfree;
+      mozPermissions = [
+          "<all_urls>"
+          "storage"
+          "activeTab"
+          "contextMenus"
+          "webRequest"
+          "https://www.deepl.com/*/translator*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "ublock-origin" = buildFirefoxXpiAddon {
+    pname = "ublock-origin";
+    version = "1.71.0";
+    addonId = "uBlock0@raymondhill.net";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4814095/ublock_origin-1.71.0.xpi";
+    sha256 = "47f788a1fc2c014830b30bb0ef9588615701b98c5265fb19b8cf4ba779849feb";
+    meta = with lib; {
+      homepage = "https://github.com/gorhill/uBlock#ublock-origin";
+      description = "Finally, an efficient wide-spectrum content blocker. Easy on CPU and memory.";
+      license = licenses.unfree;
+      mozPermissions = [
+          "alarms"
+          "dns"
+          "menus"
+          "privacy"
+          "storage"
+          "tabs"
+          "unlimitedStorage"
+          "webNavigation"
+          "webRequest"
+          "webRequestBlocking"
+          "<all_urls>"
+          "http://*/*"
+          "https://*/*"
+          "file://*/*"
+          "https://easylist.to/*"
+          "https://*.fanboy.co.nz/*"
+          "https://filterlists.com/*"
+          "https://forums.lanik.us/*"
+          "https://github.com/*"
+          "https://*.github.io/*"
+          "https://github.com/uBlockOrigin/*"
+          "https://ublockorigin.github.io/*"
+          "https://*.reddit.com/r/uBlockOrigin/*"
+        ];
+      platforms = platforms.all;
+    };
+  };
+  "youtube-addon" = buildFirefoxXpiAddon {
+    pname = "youtube-addon";
+    version = "4.2026";
+    addonId = "{3c6bf0cc-3ae2-42fb-9993-0d33104fdcaf}";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4723468/youtube_addon-4.2026.xpi";
+    sha256 = "fdd964bb8b157e1cc7983ea1b5ca4dab4fe56690098eb23ba0c4726381766535";
+    meta = with lib; {
+      homepage = "https://github.com/code4charity/YouTube-Extension/";
+      description = "Youtube Extension. Powerful but lightweight. Enrich your Youtube and content selection. Make YouTube tidy and smart! (Layout, Filters, Shortcuts, Playlist)";
+      license = licenses.unfree;
+      mozPermissions = [
+          "contextMenus"
+          "storage"
+          "unlimitedStorage"
+          "https://www.youtube.com/*"
         ];
       platforms = platforms.all;
     };
