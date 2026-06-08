@@ -2,10 +2,10 @@
 {
   "bitwarden-password-manager" = buildFirefoxXpiAddon {
     pname = "bitwarden-password-manager";
-    version = "2026.4.0";
+    version = "2026.5.0";
     addonId = "{446900e4-71c2-419f-a6a7-df9c091e268b}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4796063/bitwarden_password_manager-2026.4.0.xpi";
-    sha256 = "ccbdf6c3a11c8655d4fe9bdfcf5f16c4c9ff2d8732fadbb85396a2123274ae10";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4827854/bitwarden_password_manager-2026.5.0.xpi";
+    sha256 = "8ebb475518a330b88b4e2cba0864c5ca11bed390739cb84fbf256e938c91b6d9";
     meta = with lib; {
       homepage = "https://bitwarden.com";
       description = "At home, at work, or on the go, Bitwarden easily secures all your passwords, passkeys, and sensitive information.";
@@ -32,10 +32,10 @@
   };
   "darkreader" = buildFirefoxXpiAddon {
     pname = "darkreader";
-    version = "4.9.125";
+    version = "4.9.126";
     addonId = "addon@darkreader.org";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4783321/darkreader-4.9.125.xpi";
-    sha256 = "21a9a18bc873e09b9b10f841a559807ce9e90738674c7eddb9f639c0663eaf28";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4834907/darkreader-4.9.126.xpi";
+    sha256 = "b0bd9127a60a5af8db6fa23de81f304a4ec5d7d3cd7e6e301e3eaa42339528a7";
     meta = with lib; {
       homepage = "https://darkreader.org/";
       description = "Dark mode for every website. Take care of your eyes, use dark theme for night and daily browsing.";
@@ -80,10 +80,10 @@
   };
   "keepassxc-browser" = buildFirefoxXpiAddon {
     pname = "keepassxc-browser";
-    version = "1.10.1";
+    version = "1.10.3";
     addonId = "keepassxc-browser@keepassxc.org";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4750788/keepassxc_browser-1.10.1.xpi";
-    sha256 = "f358471e7f5545a64ab69f4897127033197a8d9cde5746324b1dae241a2b0a29";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4831838/keepassxc_browser-1.10.3.xpi";
+    sha256 = "4df9c54e0a293aa2e37e9bcf97ec307a35a00e78cebaa9a68edba552c07c4568";
     meta = with lib; {
       homepage = "https://keepassxc.org/";
       description = "Official browser plugin for the KeePassXC password manager (https://keepassxc.org).";
@@ -996,10 +996,10 @@
   };
   "styl-us" = buildFirefoxXpiAddon {
     pname = "styl-us";
-    version = "2.3.29.24";
+    version = "2.3.30";
     addonId = "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4827127/styl_us-2.3.29.24.xpi";
-    sha256 = "4aa7112f4919e91ace0d367179f39882d406e087d9db8ff3a5fbe1d1294997a3";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4827922/styl_us-2.3.30.xpi";
+    sha256 = "f7dfd9fc245c7c452d665dfb1640585d5015b08faed4114f0b28ef90b6575dbd";
     meta = with lib; {
       homepage = "https://add0n.com/stylus.html";
       description = "Redesign your favorite websites with Stylus, an actively developed and community driven userstyles manager. Easily install custom themes from popular online repositories, or create, edit, and manage your own personalized CSS stylesheets.";
@@ -1102,10 +1102,10 @@
   };
   "youtube-addon" = buildFirefoxXpiAddon {
     pname = "youtube-addon";
-    version = "4.2026";
+    version = "4.2027";
     addonId = "{3c6bf0cc-3ae2-42fb-9993-0d33104fdcaf}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4723468/youtube_addon-4.2026.xpi";
-    sha256 = "fdd964bb8b157e1cc7983ea1b5ca4dab4fe56690098eb23ba0c4726381766535";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4828211/youtube_addon-4.2027.xpi";
+    sha256 = "2012c7af0ce0f261c90189ee261c802e6a9307e5d5ce0fe8bc9eefbbd5d486dc";
     meta = with lib; {
       homepage = "https://github.com/code4charity/YouTube-Extension/";
       description = "Youtube Extension. Powerful but lightweight. Enrich your Youtube and content selection. Make YouTube tidy and smart! (Layout, Filters, Shortcuts, Playlist)";
