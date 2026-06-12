@@ -9,6 +9,7 @@ let
     (baseNameOf ./.)
     "firefox-addons"
     "firefox-themes"
+    "games"
     "windows-iso"
     "walogram"
   ];
