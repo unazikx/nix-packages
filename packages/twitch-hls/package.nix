@@ -8,13 +8,13 @@
 
 rustPlatform.buildRustPackage (_old: {
   pname = baseNameOf ./.;
-  version = "1.7.0";
+  version = "1.8.0";
 
   src = fetchFromGitHub {
     owner = "2bc4";
     repo = "twitch-hls-client";
     tag = _old.version;
-    hash = "sha256-GtnAx94bQGb5rokXsep815+OeazBCfoDRkvTGQKDC4c=";
+    hash = "sha256-6b0EX7ykeYSUvfT03Ot6JiFk7EETF5b69FhnGZb6prI=";
   };
 
   cargoLock.lockFile = "${_old.src}/Cargo.lock";

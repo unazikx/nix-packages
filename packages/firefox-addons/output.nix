@@ -996,10 +996,10 @@
   };
   "styl-us" = buildFirefoxXpiAddon {
     pname = "styl-us";
-    version = "2.3.30";
+    version = "2.3.34.30";
     addonId = "{7a7a4a92-a2a0-41d1-9fd7-1e92480d612d}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4827922/styl_us-2.3.30.xpi";
-    sha256 = "f7dfd9fc245c7c452d665dfb1640585d5015b08faed4114f0b28ef90b6575dbd";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4854763/styl_us-2.3.34.30.xpi";
+    sha256 = "74040f0eb43327acc58a78604262768f46425a85d23c1a194a9815986ea38a4e";
     meta = with lib; {
       homepage = "https://add0n.com/stylus.html";
       description = "Redesign your favorite websites with Stylus, an actively developed and community driven userstyles manager. Easily install custom themes from popular online repositories, or create, edit, and manage your own personalized CSS stylesheets.";
@@ -1102,10 +1102,10 @@
   };
   "youtube-addon" = buildFirefoxXpiAddon {
     pname = "youtube-addon";
-    version = "4.2027";
+    version = "4.2028";
     addonId = "{3c6bf0cc-3ae2-42fb-9993-0d33104fdcaf}";
-    url = "https://addons.mozilla.org/firefox/downloads/file/4828211/youtube_addon-4.2027.xpi";
-    sha256 = "2012c7af0ce0f261c90189ee261c802e6a9307e5d5ce0fe8bc9eefbbd5d486dc";
+    url = "https://addons.mozilla.org/firefox/downloads/file/4840171/youtube_addon-4.2028.xpi";
+    sha256 = "42128804e02c3472150099504aa62952805a06715b62fbb702dad6c79a699678";
     meta = with lib; {
       homepage = "https://github.com/code4charity/YouTube-Extension/";
       description = "Youtube Extension. Powerful but lightweight. Enrich your Youtube and content selection. Make YouTube tidy and smart! (Layout, Filters, Shortcuts, Playlist)";
