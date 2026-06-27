@@ -7,9 +7,10 @@
 
 stdenv.mkDerivation (_old: {
   pname = "voices-of-the-void";
-  version = "090j_0001";
+  version = "090n";
 
   src = fetchurl {
+    # https://archive.votv.dev/games/votv
     url = "https://r2.votv.dev/archive/votv/${_old.version}.7z";
     sha256 = "sha256-3qpCNHhx1PDU5zts1mW3UVfCtjty/7kJawCSx+EV6X8=";
   };
