@@ -10,7 +10,7 @@ stdenv.mkDerivation (_old: {
 
   src = fetchzip {
     url = "https://vortex.storage.clo.ru/download/v${_old.version}/vortex-${_old.version}-server.zip";
-    sha256 = "sha256-naRwLEPOR5qJ8HW3jaj2kw6xvmODMK+vjdx8Schnqvk=";
+    sha256 = "sha256-Sx52iBk2pnDqWBWh3EP+EnByhf/GtoU3ZmBqhgciDFs=";
     stripRoot = false;
   };
 
