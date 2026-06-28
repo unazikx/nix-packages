@@ -5,12 +5,13 @@
 }:
 
 stdenv.mkDerivation (_old: {
-  name = "vortex-server";
-  # version where? fckn devs didnt made pinned version
+  pname = "vortex-server";
+  version = "1.1.1b";
 
   src = fetchzip {
-    url = "https://vortex.storage.clo.ru/vortex-server.zip";
+    url = "https://vortex.storage.clo.ru/download/v${_old.version}/vortex-${_old.version}-server.zip";
     sha256 = "sha256-naRwLEPOR5qJ8HW3jaj2kw6xvmODMK+vjdx8Schnqvk=";
+    stripRoot = false;
   };
 
   installPhase = ''
@@ -19,8 +20,8 @@ stdenv.mkDerivation (_old: {
   '';
 
   meta = {
-    description = "Minecraft modpack TerraFirmaGreg (TerraFirmaCraft + GregTech + Create)";
-    homepage = "https://github.com/TerraFirmaGreg-Team/Modpack-Modern";
-    license = lib.licenses.lgpl3Only;
+    description = "Custom story telling Minecraft modpack";
+    homepage = "https://vrtx.su";
+    license = lib.licenses.unfree;
   };
 })
