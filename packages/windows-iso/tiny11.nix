@@ -23,9 +23,9 @@ stdenv.mkDerivation (_old: {
   '';
 
   meta = {
-    description = "Tiny11 it is windows11 sborka";
+    description = "Tiny11 - lightweight Windows 11 build";
     homepage = "https://archive.org/details/tiny-11-NTDEV";
-    license = lib.licenses.unfree; # it is unfree
+    license = lib.licenses.unfree;
     platforms = [ "x86_64-linux" ];
   };
 })

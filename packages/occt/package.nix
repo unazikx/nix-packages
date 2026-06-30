@@ -105,10 +105,7 @@ stdenv.mkDerivation (_old: {
     description = "OverClock Checking Tool - CPU/GPU stress testing and monitoring";
     homepage = "https://www.ocbase.com";
     license = lib.licenses.unfree;
-    platforms = [
-      "x86_64-linux"
-      "x86_64-windows"
-    ];
+    platforms = [ "x86_64-linux" ];
     mainProgram = "occt";
   };
 })

@@ -22,6 +22,7 @@
         homepage = "https://github.com/Open-Wine-Components/umu-proton";
         license = lib.licenses.bsd3;
         platforms = [ "x86_64-linux" ];
+        mainProgram = "proton";
       };
     }
   )

@@ -5,9 +5,9 @@
 
 runCommand "build-little-fox" {
   meta = {
-    description = "A minimalistic, mouse centered CSS theme for FireFox.";
+    description = "Minimalistic, mouse-centered CSS theme for Firefox";
     homepage = "https://github.com/biglavis/LittleFox";
     license = lib.licenses.mit;
-    platforms = [ "x86_64-linux" ];
+    platforms = lib.platforms.all;
   };
 } /* bash */ "cp ${./userChrome.css} $out"

@@ -23,5 +23,6 @@ stdenv.mkDerivation (_old: {
     description = "Custom story telling Minecraft modpack";
     homepage = "https://vrtx.su";
     license = lib.licenses.unfree;
+    platforms = lib.platforms.linux;
   };
 })

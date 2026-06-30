@@ -19,7 +19,7 @@ python312Packages.buildPythonApplication {
   '';
 
   meta = {
-    description = "Calculate hash for nix (links or local file)";
+    description = "Calculate Nix hash for links or local files";
     homepage = "https://gist.github.com/unazikx/261536eed5cefe385fa1a0b0eed7b2c2";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];

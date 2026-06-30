@@ -30,5 +30,6 @@ buildNpmPackage (_old: {
     homepage = "https://github.com/VoidTogether/VoidTogether-Server";
     license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];
+    mainProgram = "void-together";
   };
 })

@@ -33,10 +33,9 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "Simple menu for list data from rbw";
-    homepage = "https://gist.github.com/axax-loll/94c563d81c5e8694de0e27aa588a53aa";
+    description = "Screenshot tool for Sway with preview and clipboard support";
     license = lib.licenses.unlicense;
     platforms = [ "x86_64-linux" ];
-    mainProgram = "rbw-fzf";
+    mainProgram = "swayshot";
   };
 }

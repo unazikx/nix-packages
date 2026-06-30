@@ -28,9 +28,10 @@ buildGoModule (_old: {
   ];
 
   meta = {
-    description = "Display minecraft capes and player heads";
+    description = "Display Minecraft capes and player heads";
     homepage = "https://github.com/dorochadev/capes";
     license = lib.licenses.mit;
-    mainProgram = "cliamp";
+    platforms = [ "x86_64-linux" ];
+    mainProgram = "capes";
   };
 })

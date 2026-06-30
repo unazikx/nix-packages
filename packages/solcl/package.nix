@@ -23,9 +23,10 @@ buildGoModule (_old: {
   ];
 
   meta = {
-    description = "Solar system visualization tui";
+    description = "Solar system visualization TUI";
     homepage = "https://github.com/Cladamos/solcl";
     license = lib.licenses.mit;
+    platforms = lib.platforms.linux;
     mainProgram = "solcl";
   };
 })

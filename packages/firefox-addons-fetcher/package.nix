@@ -16,7 +16,7 @@ python312Packages.buildPythonApplication (_old: {
   '';
 
   meta = {
-    description = "Fetches firefox addons to nix file";
+    description = "Fetch Firefox addons and generate Nix package expressions";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
     mainProgram = "firefox-fetch-addons";

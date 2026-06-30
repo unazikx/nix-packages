@@ -27,7 +27,7 @@ buildNpmPackage {
   '';
 
   meta = {
-    description = "SafeTwitch is a privacy respecting frontend for twitch.tv";
+    description = "Privacy-respecting frontend for twitch.tv";
     homepage = "https://github.com/unazikx/safetwitch-frontend";
     license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];

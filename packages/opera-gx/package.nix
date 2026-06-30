@@ -91,5 +91,6 @@ stdenv.mkDerivation (_old: {
     homepage = "https://www.opera.com/gx";
     license = lib.licenses.unfree;
     platforms = lib.platforms.linux;
+    mainProgram = "opera-gx";
   };
 })

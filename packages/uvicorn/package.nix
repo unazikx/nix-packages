@@ -29,5 +29,7 @@ python312Packages.buildPythonApplication (_old: {
     description = "ASGI web server implementation for Python";
     homepage = "https://github.com/Kludex/uvicorn";
     license = lib.licenses.bsd3ClauseTso;
+    platforms = lib.platforms.all;
+    mainProgram = "uvicorn";
   };
 })

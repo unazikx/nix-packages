@@ -19,5 +19,6 @@ fishPlugins.buildFishPlugin {
     description = "Fish shell colorful ASCII-art logo";
     homepage = "https://github.com/laughedelic/fish_logo";
     license = lib.licenses.mit;
+    platforms = lib.platforms.all;
   };
 }

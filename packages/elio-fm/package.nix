@@ -23,6 +23,7 @@ rustPlatform.buildRustPackage (_old: {
     description = "Terminal file manager with rich previews, inline images, and trash support";
     homepage = "https://elio-fm.github.io";
     license = lib.licenses.mit;
+    platforms = lib.platforms.linux;
     mainProgram = "elio";
   };
 })

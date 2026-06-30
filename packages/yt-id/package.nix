@@ -27,7 +27,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "Get id youtube channels from url";
+    description = "Extract YouTube channel ID from URL";
     homepage = "https://github.com/avanssion/youtube-channel-id-finder";
     license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];

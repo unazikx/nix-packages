@@ -39,7 +39,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "The russian engineering fonts";
+    description = "Russian engineering fonts";
     license = {
       tag = "custom";
       shortName = "copyright";
@@ -48,6 +48,6 @@ stdenv.mkDerivation {
       free = false;
     };
     homepage = "https://stroydocs.com/info/gost_fonts";
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.all;
   };
 }

@@ -40,7 +40,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "A (very) lightweight MS Office file reader via zathura";
+    description = "Lightweight MS Office file reader via zathura";
     homepage = "https://github.com/paoloap/zaread";
     license = lib.licenses.gpl3;
     platforms = [ "x86_64-linux" ];

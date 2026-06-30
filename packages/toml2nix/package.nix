@@ -20,10 +20,10 @@ python312Packages.buildPythonApplication (_old: {
   build-system = [ python312Packages.setuptools ];
 
   meta = {
-    description = "Convert toml files to nix";
+    description = "Convert TOML files to Nix expressions";
     homepage = "https://github.com/erooke/toml2nix";
     license = lib.licenses.isc;
-    platforms = [ "x86_64-linux" ];
+    platforms = lib.platforms.all;
     mainProgram = "toml2nix";
   };
 })

@@ -30,7 +30,7 @@ python312Packages.buildPythonApplication {
   '';
 
   meta = {
-    description = "Watch movies/series from rezka in terminal";
+    description = "Watch movies/series from HDRezka in terminal via fzf";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
     mainProgram = "rezka-fzf";

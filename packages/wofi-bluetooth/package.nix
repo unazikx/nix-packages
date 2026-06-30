@@ -22,7 +22,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "Control bt via wofi";
+    description = "Bluetooth management menu using wofi";
     homepage = "https://github.com/unazikx/wofi-bluetooth";
     license = lib.licenses.gpl3;
     platforms = [ "x86_64-linux" ];

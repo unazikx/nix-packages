@@ -18,10 +18,10 @@ rustPlatform.buildRustPackage {
   cargoHash = "sha256-13gDpYcG0gB35zu8pzKUuSRvTc10cCjWQkIg42zejpc=";
 
   meta = {
-    description = "A lightweight, external sidebar manager for the Niri window manager";
+    description = "Lightweight external sidebar manager for the Niri window manager";
     homepage = "https://github.com/Vigintillionn/niri-sidebar";
     license = lib.licenses.mit;
-    platforms = lib.platforms.x86_64;
+    platforms = lib.platforms.linux;
     mainProgram = "niri-sidebar";
   };
 }

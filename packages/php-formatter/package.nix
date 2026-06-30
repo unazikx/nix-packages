@@ -28,10 +28,10 @@ stdenv.mkDerivation (_old: {
   '';
 
   meta = {
-    description = "Calculate hash for nix (links or local file)";
-    homepage = "https://gist.github.com/unazikx/261536eed5cefe385fa1a0b0eed7b2c2";
-    license = lib.licenses.wtfpl;
+    description = "Opinionated PHP code formatter";
+    homepage = "https://github.com/lkrms/pretty-php";
+    license = lib.licenses.mit;
     platforms = [ "x86_64-linux" ];
-    mainProgram = "hasher";
+    mainProgram = "php-formatter";
   };
 })

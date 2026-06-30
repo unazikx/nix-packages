@@ -30,6 +30,6 @@ stdenv.mkDerivation {
       free = false;
     };
     homepage = "https://github.com/mrbvrz/segoe-ui-linux";
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.all;
   };
 }

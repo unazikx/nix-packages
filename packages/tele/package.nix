@@ -26,6 +26,7 @@ buildGoModule (_old: {
     description = "Keyboard-first Telegram client for the terminal";
     homepage = "https://github.com/sorokin-vladimir/tele";
     license = lib.licenses.gpl3Only;
+    platforms = lib.platforms.linux;
     mainProgram = "tele";
   };
 })

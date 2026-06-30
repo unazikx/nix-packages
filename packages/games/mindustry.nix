@@ -59,6 +59,7 @@ stdenv.mkDerivation {
     description = "Build factories and defense towers";
     homepage = "https://anuke.itch.io/mindustry";
     license = lib.licenses.gpl3Only;
+    platforms = lib.platforms.linux;
     mainProgram = "mindustry";
   };
 }

@@ -29,7 +29,7 @@ rustPlatform.buildRustPackage {
     description = "Terminal audio visualizer";
     homepage = "https://github.com/the-unknown/snglrtty";
     license = lib.licenses.mit;
-    platforms = lib.platforms.x86_64;
+    platforms = lib.platforms.linux;
     mainProgram = "snglrtty";
   };
 }

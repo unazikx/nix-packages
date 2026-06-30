@@ -19,5 +19,6 @@ fishPlugins.buildFishPlugin {
     description = "Helix key bindings for fish";
     homepage = "https://github.com/sshilovsky/fish-helix";
     license = lib.licenses.mit;
+    platforms = lib.platforms.all;
   };
 }

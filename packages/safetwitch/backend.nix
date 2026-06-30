@@ -23,10 +23,10 @@ buildGoModule (_old: {
   ];
 
   meta = {
-    description = "The backend for SafeTwitch";
+    description = "Backend for the SafeTwitch privacy-respecting Twitch frontend";
     homepage = "https://github.com/unazikx/safetwitch-backend";
     license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];
-    mainProgram = "safetwitch";
+    mainProgram = "safetwitch-backend";
   };
 })

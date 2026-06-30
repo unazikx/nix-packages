@@ -24,7 +24,7 @@ stdenv.mkDerivation (_old: {
   '';
 
   meta = {
-    description = "Server for live watch torrets";
+    description = "Server for streaming torrents";
     homepage = "https://github.com/YouROK/TorrServer";
     license = lib.licenses.gpl3;
     platforms = [ "x86_64-linux" ];

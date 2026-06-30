@@ -50,8 +50,9 @@ python312Packages.buildPythonApplication {
   '';
 
   meta = with lib; {
-    description = "Обёртка над portablemc с автовыбором JVM из Nix-пакетов";
+    description = "Wrapper for portablemc with automatic JVM selection from Nix packages";
     license = licenses.mit;
+    platforms = platforms.linux;
     mainProgram = "portablemc-jvm";
   };
 }

@@ -15,8 +15,8 @@ stdenv.mkDerivation (_old: {
   '';
 
   meta = {
-    description = "Shows battery level on hyprlock screen";
-    homepage = "https://gitlab.com/ntgn/helium-flake/-/blob/main/README.md?ref_type=heads#obtaining-extensions";
+    description = "Fetch and package Helium browser extensions for Nix";
+    homepage = "https://gitlab.com/ntgn/helium-flake";
     license = lib.licenses.wtfpl;
     platforms = [ "x86_64-linux" ];
     mainProgram = "helium-prefetcher";

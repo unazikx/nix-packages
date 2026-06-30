@@ -20,8 +20,9 @@
       meta = {
         description = "WineGDK Protonified";
         homepage = "https://github.com/Weather-OS/GDK-Proton";
-        license = lib.licenses.unfree; # og proton-ge is lib.licenses.bsd3
+        license = lib.licenses.unfree;
         platforms = [ "x86_64-linux" ];
+        mainProgram = "proton";
       };
     }
   )

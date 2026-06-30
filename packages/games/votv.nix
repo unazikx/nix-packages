@@ -23,7 +23,7 @@ stdenv.mkDerivation (_old: {
   '';
 
   meta = {
-    description = "Voices of the Void (windows version)";
+    description = "Voices of the Void (Windows version)";
     homepage = "https://mrdrnose.itch.io/votv";
     license = lib.licenses.agpl3Only;
     platforms = [ "x86_64-linux" ];

@@ -30,7 +30,7 @@ stdenv.mkDerivation {
   '';
 
   meta = {
-    description = "Simple menu for list data from rbw";
+    description = "FZF-based menu for rbw password manager";
     homepage = "https://gist.github.com/axax-loll/94c563d81c5e8694de0e27aa588a53aa";
     license = lib.licenses.unlicense;
     platforms = [ "x86_64-linux" ];

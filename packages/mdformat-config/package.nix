@@ -34,5 +34,6 @@ python312Packages.buildPythonPackage (_old: {
     homepage = "https://github.com/hukkin/mdformat-config";
     changelog = "https://github.com/hukkin/mdformat-config/releases/tag/${_old.src.tag}";
     license = lib.licenses.mit;
+    platforms = lib.platforms.all;
   };
 })

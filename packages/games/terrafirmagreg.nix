@@ -32,5 +32,6 @@ stdenv.mkDerivation (_old: {
     description = "Minecraft modpack TerraFirmaGreg (TerraFirmaCraft + GregTech + Create)";
     homepage = "https://github.com/TerraFirmaGreg-Team/Modpack-Modern";
     license = lib.licenses.lgpl3Only;
+    platforms = lib.platforms.linux;
   };
 })
