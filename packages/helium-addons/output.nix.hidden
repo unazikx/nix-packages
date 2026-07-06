@@ -1,11 +1,11 @@
 {
   ublock-origin = {
     id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";
-    hash = "sha256-VJ1fsew67rnYSg2Z8pqUlMtqYKjNA8Lmk6s5vqMyPBw=";
+    hash = "sha256-b18FKOXz5mGKbIMd5TvmXz95KQ7fTT44Qzk46xGCQ/I=";
   };
   bitwarden-password-manager = {
     id = "nngceckbapebfimnlniiiahkandclblb";
-    hash = "sha256-szBs8uPHBpgx4VAprSLOtD1XOAjUgecoAp6aJsvuT74=";
+    hash = "sha256-isQi2O13OUV39zR7Z1KkpKL7QJxPWbQw2lMLE7AO1E0=";
   };
   darkreader = {
     id = "eimadpbcbfnmbkopoojfekhnkhdbieeh";

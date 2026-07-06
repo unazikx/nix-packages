@@ -6,7 +6,7 @@
 
 buildGoModule (_old: {
   pname = baseNameOf ./.;
-  version = "0.1.1";
+  version = "0.1.2";
 
   src = fetchFromGitHub {
     owner = "programmersd21";

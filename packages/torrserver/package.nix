@@ -7,11 +7,11 @@
 
 stdenv.mkDerivation (_old: {
   pname = baseNameOf ./.;
-  version = "MatriX.141.9";
+  version = "MatriX.142";
 
   src = fetchurl {
     url = "https://github.com/YouROK/TorrServer/releases/download/${_old.version}/TorrServer-linux-amd64";
-    sha256 = "sha256-q9drWtcMsUfuE3nHf4ESabtjBgMfJGlprzrU+Rdm5jA=";
+    sha256 = "sha256-yJtnHZ9ARepKmbTJsoS7ROrmGjF5jasuSMfm/G/d/UM=";
   };
   dontUnpack = true;
 
