@@ -6,13 +6,13 @@
 
 buildGoModule (_old: {
   pname = baseNameOf ./.;
-  version = "1.7.0";
+  version = "1.8.0";
 
   src = fetchFromGitHub {
     owner = "sorokin-vladimir";
     repo = "tele";
     tag = "v${_old.version}";
-    hash = "sha256-92W9TRxpUMQj2COCTos9FajALoSaluPBE7m5CD/dM4U=";
+    hash = "sha256-ZBym6XcfzLPccavtrT1i0wxuM8C3EhNJTlQHsdNc78Y=";
   };
 
   vendorHash = "sha256-tZkIsry/MyILMb2USafVmzBfTbqeNQNZ/QtRryGCHgQ=";
