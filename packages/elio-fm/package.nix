@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage (_old: {
   pname = "elio";
-  version = "1.11.1";
+  version = "1.11.2";
 
   src = fetchFromGitHub {
     owner = "elio-fm";
     repo = "elio";
     tag = "v${_old.version}";
-    hash = "sha256-SrYRn+JZXSy7F3Jfx1u2ht/lL31FG+BtxzuIu4kHeek=";
+    hash = "sha256-k+88cWiHi1a+f6oulb5MTCnWrJU4vKPEAHBwq5H9bkQ=";
   };
 
-  cargoHash = "sha256-W7C3e8pRCPoorxQhs1jkpnTKNn3oTEOhI1tG3HZFxpw=";
+  cargoHash = "sha256-JxdWxkpyYbNxe7B1WNKRDyj2xH1W2kQn2rYj/NdPkY4=";
 
   doCheck = false;
 
