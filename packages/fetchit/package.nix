@@ -1,0 +1,36 @@
+{
+  stdenv,
+  fetchFromGitea,
+  pkg-config,
+  lua,
+  lib,
+}:
+
+stdenv.mkDerivation (_old: {
+  pname = "fetchit";
+  version = "git";
+
+  src = fetchFromGitea {
+    domain = "codeberg.org";
+    owner = "nzuum";
+    repo = "fetchit";
+    rev = "25fd005f39087ba6b41bdf897b0ca4063dfb4def";
+    hash = "sha256-0+OjyIHQ+gf/d11ZPLYjpV4qqBzZU/WfEfnmamZ9jYU=";
+  };
+
+  nativeBuildInputs = [
+    pkg-config
+    lua
+  ];
+
+  installFlags = [
+    "PREFIX=$(out)"
+  ];
+
+  meta = {
+    description = "Custom story telling Minecraft modpack";
+    homepage = "https://vrtx.su";
+    license = lib.licenses.unfree;
+    platforms = lib.platforms.linux;
+  };
+})
