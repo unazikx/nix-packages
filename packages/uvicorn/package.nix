@@ -6,7 +6,7 @@
 
 python312Packages.buildPythonApplication (_old: {
   pname = baseNameOf ./.;
-  version = "0.51.0";
+  version = "0.52.1";
   pyproject = true;
 
   src = fetchPypi {
@@ -14,7 +14,7 @@ python312Packages.buildPythonApplication (_old: {
       pname
       version
       ;
-    hash = "sha256-9vS2m2V8MS9RbdLSaKua5vJUsR5LrFBPN7KrWLJN0LA=";
+    hash = "sha256-ES7GYYFBiay8zT97hkYBR8wGX8ksCCGvp4kYeA5DVN0=";
   };
 
   build-system = [ python312Packages.hatchling ];
